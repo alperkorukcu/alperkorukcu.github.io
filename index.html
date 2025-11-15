@@ -461,10 +461,12 @@
         });
 
         // Mobile menu toggle
+        /* This was redundant and fighting with the inline onclick, so it's removed.
         document.querySelector('button[onclick*="mobile-menu"]').addEventListener('click', function() {
              var menu = document.getElementById('mobile-menu');
              menu.classList.toggle('hidden');
         });
+        */
 
         // --- Go to Top Button Logic ---
         const scrollTopBtn = document.getElementById('scrollTopBtn');
