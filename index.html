@@ -1,628 +1,827 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yunus Alper Körükcü · Senior Data Engineer</title>
+<meta name="description" content="Yunus Alper Körükcü, Senior Data Engineer in Berlin. Google Cloud Certified Professional Data Engineer with 7+ years of streaming, CDC and batch pipelines. Technical owner and architect of the Vodafone Digital Data Store: 20 TB a day at 99.9% availability.">
+<meta name="author" content="Yunus Alper Körükcü">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#07080a">
+<meta name="color-scheme" content="dark">
+<meta name="google-site-verification" content="8Oc1UxCmF72qKfXh2nGCDeyx8paZOhvLAgcBLQWvsRQ">
+<link rel="canonical" href="https://alperkorukcu.github.io/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://alperkorukcu.github.io/">
+<meta property="og:title" content="Yunus Alper Körükcü · Senior Data Engineer">
+<meta property="og:description" content="Yunus Alper Körükcü, Senior Data Engineer in Berlin. Google Cloud Certified Professional Data Engineer with 7+ years of streaming, CDC and batch pipelines. Technical owner and architect of the Vodafone Digital Data Store: 20 TB a day at 99.9% availability.">
+<meta property="og:image" content="https://alperkorukcu.github.io/assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Yunus Alper Körükcü · Senior Data Engineer">
+<meta name="twitter:description" content="Yunus Alper Körükcü, Senior Data Engineer in Berlin. Google Cloud Certified Professional Data Engineer with 7+ years of streaming, CDC and batch pipelines. Technical owner and architect of the Vodafone Digital Data Store: 20 TB a day at 99.9% availability.">
+<meta name="twitter:image" content="https://alperkorukcu.github.io/assets/img/og-image.jpg">
+<link rel="preload" href="assets/fonts/anybody-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+<script>try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('ak-fx')}catch(e){}</script>
+<style>
+@font-face{font-family:"AK Display";src:url("assets/fonts/anybody-var.woff2") format("woff2");font-weight:100 900;font-stretch:50% 150%;font-style:normal;font-display:swap}
+@font-face{font-family:"AK Sans";src:url("assets/fonts/instrument-sans-var.woff2") format("woff2");font-weight:400 700;font-stretch:75% 100%;font-style:normal;font-display:swap}
+@font-face{font-family:"AK Mono";src:url("assets/fonts/jetbrains-mono-var.woff2") format("woff2");font-weight:100 800;font-style:normal;font-display:swap}
+:root{--ink:#07080a;--ink-2:#0d0f13;--ink-3:#151820;--paper:#eceae4;--paper-2:#c3c1bb;--mute:#8e929b;--dim:#5a5f68;--line:rgba(236,234,228,.12);--line-2:rgba(236,234,228,.24);--acid:#d4ff3f;--acid-ink:#0b0d02;--warm:#ff4d6d;--cool:#39d8ff;--fd:"AK Display","Arial Black",system-ui,sans-serif;--fb:"AK Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--fm:"AK Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--g:clamp(16px,4vw,56px);--eo:cubic-bezier(.16,1,.3,1)}
+html,body{height:auto!important;min-height:100%}
+#dc-root,#dc-root>.sc-host{height:auto!important}
+html{background:#07080a;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--fb);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+*,*::before,*::after{box-sizing:border-box}
+::selection{background:var(--acid);color:var(--acid-ink)}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--acid)}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acid);outline-offset:3px}
+.ak{position:relative;overflow-x:clip;min-height:100vh;background:var(--ink)}
+.wrap{width:100%;max-width:1440px;margin-inline:auto;padding-inline:var(--g)}
+.mono{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;line-height:1.5}
+.ic{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.rd::after{content:attr(data-v)}
+[data-scr]{position:relative}
+.is-scr{color:transparent!important}
+.is-scr::after{content:attr(data-s);position:absolute;left:0;top:0;white-space:pre;color:var(--acid)}
+.ch-i.is-scr::after{left:50%;transform:translateX(-50%);color:var(--paper)}
+.cnt{position:relative;display:inline-block}
+.cnt.is-cnt{color:transparent}
+.cnt.is-cnt::after{content:attr(data-v);position:absolute;left:0;top:0;color:var(--paper);white-space:nowrap}
 
-    <!-- SEO & Meta Tags -->
-    <title>Yunus Alper Körükcü | Senior Data Engineer Berlin</title>
-    <meta name="description"
-        content="Senior Data Engineer based in Berlin with 7+ years of experience. Google Cloud Certified Professional specializing in real-time streaming (Spark, Kafka), Cloud Data Warehousing (BigQuery), and scalable architecture.">
-    <meta name="keywords"
-        content="Yunus Alper Körükcü, Data Engineer, Senior Data Engineer Berlin, GCP Professional Data Engineer, Big Data, Apache Spark, Kafka, BigQuery, ETL, Cloud Architecture, Python, SQL, Java">
-    <meta name="author" content="Yunus Alper Körükcü">
-    <meta name="robots" content="index, follow">
-    <meta name="google-site-verification" content="8Oc1UxCmF72qKfXh2nGCDeyx8paZOhvLAgcBLQWvsRQ" />
-    <link rel="canonical" href="https://alperkorukcu.github.io/">
+/* HUD */
+.hud{position:fixed;top:0;left:0;right:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px var(--g);pointer-events:none}
+.hud>*{pointer-events:auto}
+.hud-logo{display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-weight:700;font-size:13px;letter-spacing:.16em;color:var(--paper)}
+.hud-mark{display:inline-block;width:10px;height:10px;background:var(--acid);box-shadow:0 0 18px rgba(212,255,63,.6)}
+.hud-nav{display:flex;align-items:center;gap:4px;padding:5px;border:1px solid var(--line);border-radius:999px;background:rgba(7,8,10,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hud-nav a{position:relative;font-family:var(--fm);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;border-radius:999px;color:var(--paper-2);transition:color .25s}
+.hud-nav a:hover,.hud-nav a.is-on{color:var(--paper)}
+.hud-nav a.is-on::before{content:"";position:absolute;left:5px;top:50%;width:4px;height:4px;margin-top:-2px;background:var(--acid)}
+.hud-nav a.hud-cta{background:var(--acid);color:var(--acid-ink)}
+.hud-nav a.hud-cta:hover{background:#e6ff86;color:var(--acid-ink)}
+.hud-nav a.hud-cta.is-on::before{display:none}
+.prog{position:fixed;left:0;top:0;width:100%;height:2px;z-index:85;transform-origin:0 50%;transform:scaleX(0);background:var(--acid);pointer-events:none}
+.meter,.clock{position:fixed;bottom:14px;z-index:80;display:flex;gap:10px;align-items:center;padding:6px 12px;border-radius:999px;background:rgba(7,8,10,.74);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--mute);pointer-events:none;font-size:11px}
+.meter{left:var(--g)}
+.clock{right:var(--g)}
+.meter b,.clock b{color:var(--paper);font-weight:500;font-variant-numeric:tabular-nums}
+.grain{position:fixed;inset:-40%;z-index:90;pointer-events:none;opacity:0}
+.ak-fx .grain{opacity:.075}
+.fxc{position:fixed;left:0;top:0;width:100%;height:100%;z-index:95;pointer-events:none}
+.cur{position:fixed;left:0;top:0;z-index:100;pointer-events:none;display:none}
+.ak-cur .cur{display:block}
+.ak-cur-hide,.ak-cur-hide *{cursor:none!important}
+.cur-dot{position:absolute;left:0;top:0;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--acid)}
+.cur-ring{position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border:1px solid rgba(236,234,228,.5);border-radius:50%;display:grid;place-items:center;transition:width .4s var(--eo),height .4s var(--eo),margin .4s var(--eo),background-color .3s,border-color .3s}
+.cur-ring.is-hover{width:88px;height:88px;margin:-44px 0 0 -44px;background:var(--acid);border-color:var(--acid)}
+.cur-ring.is-text{width:6px;height:28px;margin:-14px 0 0 -3px;border-radius:2px;background:var(--acid);border-color:var(--acid)}
+.cur-lab{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acid-ink);opacity:0;transition:opacity .2s;white-space:nowrap}
+.cur-ring.is-hover .cur-lab{opacity:1}
 
-    <!-- Open Graph / Social Media (LinkedIn, Twitter, etc.) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://alperkorukcu.github.io/">
-    <meta property="og:title" content="Yunus Alper Körükcü | Senior Data Engineer">
-    <meta property="og:description"
-        content="Senior Data Engineer architecting robust pipelines and cloud-native solutions in Berlin. View my projects and certifications.">
-    <meta property="og:image" content="https://alperkorukcu.github.io/1761241730343.jpg">
+/* Boot */
+.boot{display:none}
+.ak-fx .boot{display:block;position:fixed;inset:0;z-index:200;animation:akBootSafe .01s linear 8s forwards}
+@keyframes akBootSafe{to{visibility:hidden;opacity:0;pointer-events:none}}
+.boot-sl{position:absolute;inset:0;display:flex;flex-direction:column}
+.boot-sl i{display:block;flex:1;margin-top:-1px;background:var(--ink)}
+.boot-in{position:absolute;left:var(--g);right:var(--g);top:50%;max-width:1000px;margin:0 auto;transform:translateY(-50%)}
+.boot-term{font-family:var(--fm);font-size:clamp(11px,1.12vw,15px);line-height:2;color:var(--mute)}
+.boot-l{margin:0;white-space:pre;overflow:hidden}
+.boot-who{margin-bottom:10px;color:var(--mute)}
+.boot-l b{color:var(--paper);font-weight:500}
+.boot-l.ok{color:var(--acid)}
+.boot-p{color:var(--acid)}
+.boot-foot{display:flex;align-items:flex-end;gap:28px;margin-top:30px}
+.boot-num{font-family:var(--fd);font-weight:800;font-size:clamp(72px,12vw,176px);line-height:.8;letter-spacing:-.04em;color:var(--paper);font-variant-numeric:tabular-nums}
+.boot-bar{position:relative;flex:1;height:2px;margin-bottom:10px;background:var(--line);overflow:hidden}
+.boot-bar i{position:absolute;inset:0;background:var(--acid);transform-origin:0 50%;transform:scaleX(0)}
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Yunus Alper Körükcü | Senior Data Engineer">
-    <meta name="twitter:description"
-        content="Senior Data Engineer architecting robust pipelines and cloud-native solutions in Berlin.">
-    <meta name="twitter:image" content="https://alperkorukcu.github.io/1761241730343.jpg">
+/* Sections */
+.sec{position:relative;padding:clamp(96px,16vh,180px) 0}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:clamp(32px,6vh,64px);color:var(--mute)}
+.sec-no{color:var(--acid)}
+.sec-rule{flex:1;height:1px;background:var(--line);transform-origin:0 50%}
+.sec-title{margin:0 0 clamp(28px,5vh,56px);font-family:var(--fd);font-weight:800;font-size:clamp(52px,9.4vw,152px);line-height:.88;letter-spacing:-.035em;text-transform:uppercase}
+.mask{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.mask-i{display:block;transform-origin:0 100%}
+.posts li{overflow:hidden}
+.cur-ring.is-lens{width:176px;height:176px;margin:-88px 0 0 -88px;background:transparent;border-color:var(--acid)}
+.cur-ring.is-lens .cur-lab{opacity:0}
+.cur-ring.is-dark{background:var(--ink);border-color:var(--ink)}
+.cur-ring.is-dark .cur-lab{color:var(--acid)}
+.orb-core{z-index:2}
+.orb-sat{z-index:1}
+.lede{margin:0;max-width:560px;color:var(--paper-2);font-size:clamp(17px,1.35vw,20px)}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class', // Enable class-based dark mode
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        slate: {
-                            850: '#1a202c',
-                            900: '#0f172a',
-                        },
-                        emerald: {
-                            450: '#10b981', // Custom tech green
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+/* Hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:112px 0 52px;overflow:hidden;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-4;background:radial-gradient(55% 45% at 78% 42%,rgba(212,255,63,.12),transparent 70%),radial-gradient(45% 55% at 18% 30%,rgba(57,216,255,.07),transparent 70%),var(--ink)}
+.hero-gl{position:absolute;left:0;top:0;width:100%;height:100%;z-index:-3;display:block}
+.ak-fx .hero-gl{opacity:0}
+.hero-shade{position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(to top,var(--ink) 1%,rgba(7,8,10,.78) 30%,rgba(7,8,10,.08) 62%,rgba(7,8,10,.4) 100%)}
+.hero-t{position:absolute;top:0;bottom:0;left:52%;z-index:-1;width:1px;background:linear-gradient(to bottom,transparent 8%,rgba(212,255,63,.45) 30%,rgba(212,255,63,.45) 62%,transparent 88%);transform-origin:50% 0}
+.hero-t span{position:absolute;top:21%;left:12px;color:var(--acid);white-space:nowrap}
+.hero-legend{position:absolute;left:var(--g);right:var(--g);top:90px;display:flex;justify-content:space-between;color:var(--dim)}
+.hero-kick{display:flex;flex-wrap:wrap;gap:8px 24px;margin:0 0 20px;padding:0;list-style:none;color:var(--paper-2)}
+.hero-kick li{display:inline-flex;align-items:center;gap:9px}
+.hero-kick li::before{content:"";width:6px;height:6px;background:var(--acid)}
+.hero-name{margin:0;font-family:var(--fd);font-weight:800;font-stretch:96%;font-size:clamp(60px,14vw,232px);line-height:.9;letter-spacing:-.025em;text-transform:uppercase}
+.hero-first{display:block;margin:0 0 12px 4px;font-family:var(--fm);font-size:13px;font-weight:500;letter-spacing:.34em;line-height:1;color:var(--acid)}
+.hero-line{display:block;white-space:nowrap}
+.ch{display:inline-block}
+.ch-i{display:inline-block;position:relative;transform-origin:50% 100%}
+.hero-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px 64px;align-items:end;margin-top:34px}
+.beats{display:flex;flex-wrap:wrap;gap:6px 28px;margin:0;padding:0;list-style:none}
+.beat{font-family:var(--fd);font-weight:700;font-stretch:112%;font-size:clamp(22px,2.3vw,36px);line-height:1.08;letter-spacing:-.01em;white-space:nowrap}
+.beat b{color:var(--acid);font-weight:800}
+.hero-sub{margin:0 0 22px;max-width:520px;color:var(--paper-2);font-size:17px;line-height:1.55}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;border:1px solid var(--line-2);background:transparent;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--paper);cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--acid);color:var(--acid)}
+.btn svg{width:15px;height:15px}
+.btn--solid{background:var(--acid);border-color:var(--acid);color:var(--acid-ink)}
+.btn--solid:hover{background:#e6ff86;border-color:#e6ff86;color:var(--acid-ink)}
+.hero-scroll{position:absolute;right:var(--g);bottom:52px;display:flex;align-items:center;gap:12px;color:var(--mute)}
+.hero-scroll i{display:block;width:1px;height:46px;background:linear-gradient(var(--acid),transparent)}
 
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            /* light: slate-100 */
-        }
+/* About */
+.about-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(40px,6vw,110px);align-items:start}
+.manifesto{margin:0 0 clamp(36px,6vh,64px);font-family:var(--fd);font-weight:650;font-stretch:90%;font-size:clamp(30px,3.7vw,60px);line-height:1.1;letter-spacing:-.015em}
+.hl{position:relative;white-space:nowrap}
+.hl::before{content:"";position:absolute;left:0;right:0;bottom:-.02em;height:.09em;background:var(--acid);transform-origin:0 50%;transform:scaleX(var(--m,1))}
+.about-copy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 40px}
+.about-copy p{margin:0;color:var(--paper-2);font-size:17px}
+.about-side{display:flex;flex-direction:column;gap:32px}
+.portrait{position:relative;margin:0;aspect-ratio:1/1;border:1px solid var(--line);background:var(--ink-2);overflow:hidden}
+.portrait img{width:100%;height:100%;object-fit:cover}
+.portrait canvas{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.portrait figcaption{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;color:var(--paper);text-shadow:0 1px 8px rgba(0,0,0,.8)}
+.facts{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);border-top:1px solid var(--line)}
+.facts dt,.facts dd{margin:0;padding:12px 0;border-bottom:1px solid var(--line)}
+.facts dt{padding-right:22px;color:var(--mute)}
+.facts dd{font-size:16px}
 
-        .dark ::-webkit-scrollbar-track {
-            background: #0f172a;
-            /* dark: slate-900 */
-        }
+/* Case file */
+.dds-head{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;margin-bottom:clamp(36px,7vh,72px)}
+.dds-head .lede{max-width:660px}
+.dds-kick{margin:0 0 18px;color:var(--acid)}
+.dds-title{margin:0;font-family:var(--fd);font-weight:800;font-size:clamp(46px,7.4vw,122px);line-height:.88;letter-spacing:-.035em;text-transform:uppercase}
+.dds-pin{position:relative}
+.dds-stage{position:relative;border-top:1px solid var(--line)}
+.dds-cam{position:relative;width:100%;overflow:hidden}
+.dds-svg{display:block;width:100%;height:auto}
+.dds-meta{display:none}
+.dds-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;border-top:1px solid var(--line)}
+.dds-step{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.dds-step .mono{grid-row:span 2;color:var(--acid);padding-top:4px}
+.dds-step h3{margin:0;font-family:var(--fd);font-size:22px;font-weight:700;font-stretch:105%;line-height:1.15}
+.dds-step p{margin:0;color:var(--paper-2);font-size:16px}
+.pipe{fill:none;stroke:rgba(236,234,228,.42);stroke-width:2}
+.pipe-glow{fill:none;stroke:var(--acid);stroke-width:2.5}
+.pipe-dash{fill:none;stroke:var(--mute);stroke-width:1.5;stroke-dasharray:5 8}
+.rail{fill:none;stroke:rgba(212,255,63,.6);stroke-width:1.5;stroke-dasharray:2 9}
+.rail-dot{fill:var(--acid)}
+.nd rect{fill:#0d0f13;stroke:rgba(236,234,228,.34);stroke-width:1.5}
+.nd.is-on rect{stroke:var(--acid)}
+.nd-t{font-family:var(--fd);font-size:25px;font-weight:700;fill:var(--paper);text-anchor:middle}
+.nd-s{font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.12em;fill:var(--mute);text-anchor:middle}
+.nd-i{font-family:var(--fm);font-size:10px;font-weight:700;fill:var(--acid)}
+.pk{fill:var(--acid)}
+.rail-t{font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.14em;fill:var(--acid)}
 
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            /* light: slate-400 */
-            border-radius: 4px;
-        }
+/* Results */
+.res{list-style:none;margin:clamp(64px,11vh,130px) 0 0;padding:0;border-top:1px solid var(--line)}
+.res li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:12px 48px;padding:clamp(18px,3vh,30px) 0;border-bottom:1px solid var(--line)}
+.res-n{display:inline-block;font-family:var(--fd);font-weight:800;font-size:clamp(66px,11vw,172px);line-height:.86;letter-spacing:-.045em;font-variant-numeric:tabular-nums;white-space:nowrap;transform-origin:0 100%}
+.res-suf{font-size:.42em;letter-spacing:-.01em;margin-left:.08em;color:var(--acid);display:inline-block}
+.res-l{margin:0;max-width:470px;color:var(--paper-2);font-size:clamp(18px,1.6vw,24px);line-height:1.35}
+.res-bar{position:relative;height:3px;margin-top:16px;max-width:470px;background:var(--line);overflow:hidden}
+.res-bar i{position:absolute;inset:0;background:var(--acid);transform-origin:0 50%;transform:scaleX(var(--f,1))}
+.res-seg{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;max-width:470px;margin-top:16px}
+.res-seg i{display:block;height:6px;background:var(--acid)}
+.pf-arr{display:inline-block;width:.62em;height:.62em;margin:0 .1em;vertical-align:.08em;stroke-width:2.6}
 
-        .dark ::-webkit-scrollbar-thumb {
-            background: #334155;
-            /* dark: slate-700 */
-        }
+/* Proofs */
+.proofs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin-top:clamp(56px,9vh,110px);background:var(--line);border:1px solid var(--line)}
+.pf{display:flex;flex-direction:column;gap:22px;min-height:380px;padding:clamp(24px,3vw,40px);background:var(--ink)}
+.pf-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.pf-n{margin:0;font-family:var(--fd);font-weight:800;font-size:clamp(44px,5vw,78px);line-height:.9;letter-spacing:-.035em;white-space:nowrap}
+.pf-n span{color:var(--acid)}
+.pf-l{margin:0;max-width:300px;color:var(--paper-2);font-size:16px;line-height:1.45;text-align:right}
+.pf-viz{flex:1;display:grid;place-items:center;min-height:180px}
+.merge{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:7px;width:100%;max-width:430px}
+.merge i{display:block;aspect-ratio:1/1;background:var(--paper)}
+.cluster{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:5px;width:100%;max-width:400px}
+.cluster i{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:2px;aspect-ratio:1/1}
+.cluster b{display:block;background:rgba(236,234,228,.66)}
+.cluster u{position:absolute;width:calc(50% - 1px);height:calc(50% - 1px);background:var(--ink);box-shadow:inset 0 0 0 1px var(--acid)}
+.cluster i:nth-child(4n+1) u{left:0;top:0}
+.cluster i:nth-child(4n+2) u{right:0;top:0}
+.cluster i:nth-child(4n+3) u{left:0;bottom:0}
+.cluster i:nth-child(4n) u{right:0;bottom:0}
+.sw{display:grid;gap:14px;width:100%}
+.sw-lane{display:grid;grid-template-columns:128px minmax(0,1fr) 78px;align-items:center;gap:12px}
+.sw-tag{color:var(--mute);font-size:10.5px}
+.sw-track{position:relative;height:24px;border:1px solid var(--line-2);overflow:hidden;container-type:inline-size}
+.sw-track i{position:absolute;left:0;top:50%;width:8px;height:8px;margin-top:-4px;background:var(--paper)}
+.sw-lane.is-live .sw-track{border-color:var(--acid)}
+.sw-lane.is-live .sw-track i{background:var(--acid)}
+.sw-lane.is-idle .sw-track i{opacity:.25}
+.sw-st{font-size:10.5px;text-align:right;color:var(--paper-2)}
+.sw-lane.is-live .sw-st{color:var(--acid)}
+.sw-read{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:12px;border-top:1px solid var(--line);color:var(--mute)}
+.sw-read b{font-family:var(--fd);font-size:30px;font-weight:800;color:var(--paper);letter-spacing:-.02em;text-transform:none}
+.team{width:100%;max-width:360px;height:auto;overflow:visible}
+.tm-l{stroke:rgba(236,234,228,.3);stroke-width:1.5;fill:none}
+.tm-n{fill:var(--ink-2);stroke:var(--paper);stroke-width:1.5}
+.tm-lead{fill:var(--acid);stroke:var(--acid)}
+.tm-up{fill:none;stroke:var(--acid);stroke-width:1.5}
+.tm-t{font-family:var(--fm);font-size:10px;letter-spacing:.1em;fill:var(--mute);text-anchor:middle}
+.tm-t.acid{fill:var(--acid)}
+@media (prefers-reduced-motion:no-preference){
+.sw-track i{animation:akRun 2.4s linear infinite}
+.sw-track i:nth-child(2){animation-delay:-.5s}
+.sw-track i:nth-child(3){animation-delay:-1s}
+.sw-track i:nth-child(4){animation-delay:-1.5s}
+.sw-track i:nth-child(5){animation-delay:-2s}
+.sw-lane.is-fast .sw-track i{animation-duration:.9s}
+.hud-mark{animation:akPulse 2.2s ease-in-out infinite}
+}
+@keyframes akRun{from{transform:translateX(-12px)}to{transform:translateX(100cqw)}}
+@keyframes akPulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-            /* light: slate-500 */
-        }
+/* Marquee */
+.mq{position:relative;overflow:hidden;padding:clamp(36px,7vh,80px) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mq-row{display:flex;width:max-content;will-change:transform}
+.mq-row+.mq-row{margin-top:10px}
+.mq-row span{padding-right:.4em;font-family:var(--fd);font-weight:800;font-size:clamp(46px,7.6vw,124px);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap}
+.mq-row .o{color:transparent;-webkit-text-stroke:1.5px rgba(236,234,228,.5)}
+.mq-row .x{color:var(--acid)}
 
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-            /* dark: slate-600 */
-        }
+/* Experience */
+.flight-top{display:block;margin-bottom:clamp(24px,5vh,48px)}
+.flight-top .sec-title{margin-bottom:22px}
+.flight-view{position:relative}
+.flight-world{display:grid;gap:24px}
+.fy,.flight-floor,.flight-hud{display:none}
+.role{max-width:780px;padding:clamp(24px,3vw,40px);background:var(--ink-2);border:1px solid var(--line)}
+.role-when{margin:0;color:var(--acid)}
+.role h3{margin:12px 0 6px;font-family:var(--fd);font-weight:800;font-size:clamp(30px,3.3vw,50px);line-height:.95;letter-spacing:-.025em;text-transform:uppercase}
+.role-at{margin:0 0 20px;color:var(--paper-2);font-size:17px}
+.role-pts{display:grid;gap:10px;margin:0 0 22px;padding:0;list-style:none}
+.role-pts li{position:relative;padding-left:22px;color:var(--paper-2);font-size:16px;line-height:1.5}
+.role-pts li::before{content:"";position:absolute;left:0;top:.7em;width:10px;height:2px;background:var(--acid)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.chip{padding:6px 10px;border:1px solid var(--line-2);border-radius:999px;font-family:var(--fm);font-size:11px;letter-spacing:.05em;color:var(--paper-2)}
+.tick{display:inline-flex;align-items:flex-start;height:1.1em;overflow:hidden;line-height:1.1;vertical-align:bottom}
+.tick-c{display:flex;flex-direction:column;flex:none}
+.tick-c span{display:block;height:1.1em;line-height:1.1em}
 
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.85);
-            /* light: white */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
+/* Stack */
+.stack-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);perspective:1400px}
+.sg{min-height:250px;padding:24px 22px 28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform-style:preserve-3d}
+.sg-k{margin:0;color:var(--acid);font-size:11px}
+.sg h3{margin:8px 0 18px;font-family:var(--fd);font-size:23px;font-weight:700;font-stretch:108%;line-height:1.1}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none;transform-style:preserve-3d}
+.tag{display:inline-block;padding:7px 11px;border:1px solid var(--line-2);border-radius:6px;background:var(--ink-2);font-size:14px;line-height:1.25;transition:background-color .2s,color .2s,border-color .2s}
+.tag:hover{background:var(--acid);border-color:var(--acid);color:var(--acid-ink)}
+.stack-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;color:var(--mute)}
 
-        .dark .glass-nav {
-            background: rgba(15, 23, 42, 0.85);
-            /* dark: slate-900 */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
+/* Certifications */
+.cert-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(36px,6vw,100px);align-items:center}
+.cert-stage{perspective:1200px}
+.cert-card{position:relative;display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:1.58/1;padding:clamp(22px,3vw,38px);border-radius:20px;border:1px solid var(--line-2);background:linear-gradient(140deg,#1a1d25 0%,#0c0e12 62%);overflow:hidden;color:var(--paper);box-shadow:0 40px 90px -40px rgba(0,0,0,.9);transform-style:preserve-3d}
+.cert-card:hover{color:var(--paper)}
+.cert-holo{position:absolute;inset:0;pointer-events:none;opacity:.75;mix-blend-mode:screen;background:linear-gradient(115deg,transparent 20%,rgba(212,255,63,.28) 33%,rgba(57,216,255,.22) 45%,rgba(255,77,109,.18) 57%,transparent 70%);background-size:240% 240%;background-position:var(--hx,40%) var(--hy,40%)}
+.cert-glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--gx,70%) var(--gy,20%),rgba(255,255,255,.16),transparent 46%)}
+.cert-sheen{position:absolute;top:-30%;bottom:-30%;left:-45%;width:30%;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:skewX(-18deg)}
+.cert-row{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.cert-chip{width:46px;height:36px;border-radius:7px;background:linear-gradient(135deg,#e7ff9a,var(--acid) 45%,#7d9c16);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.cert-name{position:relative;margin:0;font-family:var(--fd);font-weight:800;font-stretch:104%;font-size:clamp(26px,2.9vw,44px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase}
+.cert-meta{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;color:var(--paper-2)}
+.cert-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.cert-list a,.cert-list .cl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 18px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}
+.cert-list strong{font-weight:600;font-size:17px;line-height:1.35}
+.cert-list .mono{color:var(--mute);white-space:nowrap}
+.cert-list small{grid-column:1/-1;color:var(--mute);font-size:14px}
 
-        .tech-card:hover,
-        .cert-card:hover,
-        .interest-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
-        }
-    </style>
+/* Writing */
+.posts{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.post{position:relative;display:grid;grid-template-columns:60px minmax(0,1fr) auto 26px;align-items:center;gap:18px;padding:22px 0;border-bottom:1px solid var(--line);overflow:hidden}
+.post::before{content:"";position:absolute;inset:0;z-index:0;background:var(--acid);transform:scaleY(0);transform-origin:50% 100%;transition:transform .5s var(--eo)}
+.post:hover::before{transform:scaleY(1)}
+.post>*{position:relative;z-index:1}
+.post:hover,.post:hover .post-no,.post:hover .post-d{color:var(--acid-ink)}
+.post-no,.post-d{color:var(--mute)}
+.post-t{font-family:var(--fd);font-weight:700;font-stretch:104%;font-size:clamp(20px,2.15vw,32px);line-height:1.15;letter-spacing:-.012em;transition:transform .5s var(--eo)}
+.post:hover .post-t{transform:translateX(14px)}
+.post-a{width:22px;height:22px;transition:transform .5s var(--eo)}
+.post:hover .post-a{transform:rotate(45deg)}
+.writing-foot{display:flex;justify-content:flex-end;margin-top:28px}
+
+/* Beyond */
+.beyond{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(36px,6vw,100px);align-items:center}
+.orbit{position:relative;width:100%;max-width:500px;aspect-ratio:1/1;margin:0 auto}
+.orb-core{position:absolute;left:50%;top:50%;width:26%;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 34% 32%,#f6ffd6 0%,var(--acid) 34%,#62830c 72%,#1b2403 100%);box-shadow:0 0 90px rgba(212,255,63,.32)}
+.orb-ring{position:absolute;inset:6%;border:1px dashed rgba(236,234,228,.2);border-radius:50%}
+.orb-ring.r2{inset:22%;border-style:solid;border-color:rgba(236,234,228,.08)}
+.orb-sat{position:absolute;left:50%;top:50%;width:70px;height:70px;margin:-35px 0 0 -35px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-2);background:var(--ink-2);color:var(--paper);transition:border-color .3s,color .3s,background-color .3s}
+.orb-sat svg{width:30px;height:30px}
+.orb-sat.is-on{border-color:var(--acid);color:var(--acid-ink);background:var(--acid)}
+.orb-sat.s1{transform:translate(0,-190px)}
+.orb-sat.s2{transform:translate(165px,95px)}
+.orb-sat.s3{transform:translate(-165px,95px)}
+.likes{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.like{display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.like .mono{grid-row:span 2;color:var(--acid);padding-top:6px}
+.like h3{margin:0;font-family:var(--fd);font-weight:700;font-stretch:106%;font-size:26px;line-height:1.1}
+.like p{margin:0;color:var(--paper-2);font-size:16px}
+
+/* Contact */
+.contact{padding-bottom:72px}
+.depth{position:relative;display:inline-block;margin:0 0 clamp(36px,6vh,64px);font-family:var(--fd);font-weight:900;font-stretch:110%;font-size:clamp(66px,15vw,250px);line-height:.84;letter-spacing:-.04em;text-transform:uppercase}
+.depth-f{position:relative;z-index:2;display:block;color:var(--acid)}
+.depth-l{position:absolute;left:0;top:0;display:block;pointer-events:none;transform:translate(calc(var(--dx,3px)*var(--i)),calc(var(--dy,4px)*var(--i)))}
+.dl1{color:#a9cc2e}.dl2{color:#84a122}.dl3{color:#627818}.dl4{color:#43530f}.dl5{color:#2a3409}.dl6{color:#171d05}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px 80px;align-items:end}
+.contact-line{margin:0 0 22px;max-width:640px;font-size:clamp(21px,2vw,30px);line-height:1.3}
+.avail{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.avail li{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid var(--line-2);border-radius:999px;font-family:var(--fm);font-size:11.5px;letter-spacing:.06em;color:var(--paper-2)}
+.avail li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acid)}
+.reach{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.mail{display:inline-flex;align-items:center;gap:16px;max-width:100%;padding:18px 28px;border-radius:999px;background:var(--acid);color:var(--acid-ink);font-family:var(--fd);font-weight:700;font-stretch:100%;font-size:clamp(19px,2.3vw,34px);letter-spacing:-.01em;line-height:1.1}
+.mail:hover{color:var(--acid-ink);background:#e6ff86}
+.mail svg{width:26px;height:26px;flex:none}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:clamp(72px,13vh,150px);padding-top:22px;border-top:1px solid var(--line);color:var(--mute)}
+.foot a{color:var(--paper-2)}
+
+/* Motion layer (added by the motion engine) */
+.ak-fx .dds-track{height:640vh}
+.ak-fx .dds-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.ak-fx .dds-stage{position:absolute;inset:0;border:0}
+.ak-fx .dds-cam{position:absolute;inset:0}
+.ak-fx .dds-svg{position:absolute;left:0;top:0;width:100%;height:100%}
+.ak-fx .dds-meta{display:flex;position:absolute;left:var(--g);right:var(--g);top:88px;justify-content:space-between;gap:16px;color:var(--mute);z-index:3}
+.ak-fx .dds-meta b{color:var(--paper);font-weight:500}
+.ak-fx .dds-steps{position:absolute;left:var(--g);bottom:clamp(20px,5vh,56px);z-index:3;display:block;width:min(480px,calc(100% - 2*var(--g)));height:190px;border:0}
+.ak-fx .dds-step{position:absolute;left:0;right:0;bottom:0;padding:22px 24px;border:1px solid var(--line-2);background:rgba(10,11,14,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden}
+.ak-fx .flight{height:460vh}
+.ak-fx .flight-view{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;perspective:1100px;perspective-origin:50% 42%}
+.ak-fx .flight-world{position:absolute;inset:0;display:block;transform-style:preserve-3d}
+.ak-fx .role{position:absolute;left:50%;top:50%;width:min(700px,88vw);margin:0;will-change:transform,opacity;backface-visibility:hidden}
+.ak-fx .fy{display:block;position:absolute;left:50%;top:50%;font-family:var(--fd);font-weight:800;font-size:clamp(150px,24vw,400px);line-height:1;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px rgba(236,234,228,.18);white-space:nowrap;pointer-events:none;will-change:transform,opacity}
+.ak-fx .flight-floor{display:block;position:absolute;left:-60%;right:-60%;top:64%;height:150vh;transform-origin:50% 0;transform:rotateX(80deg);background-image:linear-gradient(rgba(212,255,63,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(212,255,63,.2) 1px,transparent 1px);background-size:110px 110px;-webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 55%);mask-image:linear-gradient(to bottom,#000 0%,transparent 55%);pointer-events:none}
+.ak-fx .flight-hud{display:flex;position:absolute;left:var(--g);right:var(--g);bottom:clamp(58px,9vh,88px);justify-content:space-between;align-items:flex-end;gap:16px;color:var(--mute);z-index:5}
+.flight-hud b{font-family:var(--fd);font-weight:800;font-size:clamp(40px,5vw,72px);line-height:1;letter-spacing:-.03em;color:var(--paper)}
+.flight-bar{position:relative;flex:1;max-width:420px;height:2px;margin-bottom:14px;background:var(--line)}
+.flight-bar i{position:absolute;inset:0;background:var(--acid);transform-origin:0 50%;transform:scaleX(0)}
+
+/* Responsive */
+@media (max-width:1100px){
+.stack-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.about-copy{grid-template-columns:1fr}
+}
+@media (max-width:900px){
+.hero-row,.about-grid,.dds-head,.cert-wrap,.beyond,.contact-grid,.flight-top{grid-template-columns:1fr}
+.proofs{grid-template-columns:1fr}
+.res li{grid-template-columns:1fr}
+.dds-steps{grid-template-columns:1fr}
+.hero-t{left:62%}
+.pf-l{text-align:left}
+.pf-top{flex-direction:column}
+}
+@media (max-width:720px){
+body{font-size:16px}
+.hide-s{display:none!important}
+.meter,.clock,.hero-legend,.hero-scroll{display:none}
+.hud{padding:12px 14px}
+.hud-logo span:last-child{display:none}
+.hud-nav a{padding:8px 11px;font-size:10.5px;letter-spacing:.08em}
+.hero{padding:96px 0 40px}
+.hero-first{font-size:11px}
+.sec-title{font-size:11.2vw}
+.dds-title{font-size:10.4vw}
+.depth{font-size:21vw}
+.contact{padding-bottom:64px}
+.beat{font-size:21px}
+.stack-grid{grid-template-columns:1fr}
+.post{grid-template-columns:34px minmax(0,1fr) 22px;gap:12px}
+.post-d{display:none}
+.sw-lane{grid-template-columns:96px minmax(0,1fr) 62px;gap:8px}
+.merge{gap:5px}
+.cluster{gap:3px}
+.orb-sat{width:56px;height:56px;margin:-28px 0 0 -28px}
+.orb-sat.s1{transform:translate(0,-140px)}
+.orb-sat.s2{transform:translate(122px,70px)}
+.orb-sat.s3{transform:translate(-122px,70px)}
+.ak-fx .dds-meta{top:70px}
+.ak-fx .dds-steps{height:220px}
+.ak-fx .dds-step{padding:18px}
+.dds-step h3{font-size:20px}
+.mail{padding:16px 22px}
+.cert-meta{flex-direction:column;align-items:flex-start}
+}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Yunus Alper Körükcü", "jobTitle": "Senior Data Engineer", "url": "https://alperkorukcu.github.io/", "image": "https://alperkorukcu.github.io/assets/img/alper-portrait.jpg", "email": "mailto:alperkorukcu@gmail.com", "address": {"@type": "PostalAddress", "addressLocality": "Berlin", "addressCountry": "DE"}, "alumniOf": {"@type": "CollegeOrUniversity", "name": "Karabük University"}, "hasCredential": {"@type": "EducationalOccupationalCredential", "name": "Google Cloud Certified Professional Data Engineer"}, "knowsAbout": ["Apache Kafka", "Spark Structured Streaming", "Apache Spark", "Oracle GoldenGate", "Apache Airflow", "BigQuery", "Apache Impala", "Apache Hive", "HBase", "PostgreSQL", "SQL", "Python", "Data modeling"], "sameAs": ["https://www.linkedin.com/in/yunus-alper-korukcu/", "https://alper-korukcu.medium.com/", "https://github.com/alperkorukcu"]}</script>
 </head>
+<body>
+<div class="ak" id="top">
+<div class="grain" aria-hidden="true"></div>
+<canvas class="fxc" aria-hidden="true"></canvas>
+<div class="cur" aria-hidden="true"><div class="cur-ring"><span class="cur-lab rd" data-v=""></span></div><div class="cur-dot"></div></div>
+<div class="prog" aria-hidden="true"></div>
 
-<body class="bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-300 font-sans antialiased">
+<div class="boot" aria-hidden="true">
+<div class="boot-sl"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="boot-in">
+<p class="boot-who mono">Yunus Alper Körükcü · Portfolio</p>
+<div class="boot-term">
+<p class="boot-l"><span class="boot-p">$</span> spark-submit --name alper portfolio.py</p>
+<p class="boot-l">INFO  SparkContext: running as <b>senior-data-engineer</b></p>
+<p class="boot-l">INFO  Kafka: subscribed to <b>experience</b> [7+ years]</p>
+<p class="boot-l">INFO  Checkpoint: replaying offsets from <b>2019-11</b></p>
+<p class="boot-l">INFO  Validation: <b>0</b> bad records</p>
+<p class="boot-l ok">READY Streaming query is active</p>
+</div>
+<div class="boot-foot"><span class="boot-num rd" data-v="000"></span><span class="boot-bar"><i></i></span></div>
+</div>
+</div>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass-nav transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex-shrink-0 font-mono text-xl font-bold text-slate-900 dark:text-white tracking-tighter">
-                    &lt;YAK/&gt;
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="#about"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
-                        <a href="#beyond"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Beyond</a>
-                        <a href="#stack"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Stack</a>
-                        <a href="#certifications"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Certifications</a>
-                        <a href="#projects"
-                            class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Experience</a>
+<header class="hud">
+<a class="hud-logo mag" href="#top" aria-label="Yunus Alper Körükcü, back to top" data-cursor="Top"><span class="hud-mark"></span><span>Y.A.K</span></a>
+<nav class="hud-nav" aria-label="Sections">
+<a href="#work" data-nav="work">Work</a>
+<a href="#lineage" data-nav="lineage">Experience</a>
+<a href="#schema" data-nav="schema" class="hide-s">Stack</a>
+<a href="#writing" data-nav="writing" class="hide-s">Writing</a>
+<a href="#contact" data-nav="contact" class="hud-cta">Contact</a>
+</nav>
+</header>
+<div class="meter mono" aria-hidden="true"><span>Offset</span><b class="rd" data-v="00000000"></b><span>Lag</span><b>0 ms</b></div>
+<div class="clock mono" aria-hidden="true"><span>Berlin</span><b class="rd" data-v="--:--"></b></div>
 
-                        <!-- Theme Toggle -->
-                        <button id="theme-toggle" type="button"
-                            class="text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-lg">
-                            <i id="theme-toggle-icon" class="fas fa-sun"></i>
-                        </button>
+<main>
 
-                        <a href="#contact"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Contact
-                            Me</a>
-                    </div>
-                </div>
-                <!-- Mobile menu button -->
-                <div class="-mr-2 flex md:hidden">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800"
-            id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#home"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                <a href="#about"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">About</a>
-                <a href="#beyond"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Beyond</a>
-                <a href="#stack"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Stack</a>
-                <a href="#certifications"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Certifications</a>
-                <a href="#projects"
-                    class="text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Experience</a>
-                <a href="#contact"
-                    class="text-emerald-500 dark:text-emerald-400 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+<section class="hero" id="source" aria-label="Introduction">
+<div class="hero-bg" aria-hidden="true"></div>
+<canvas class="hero-gl" aria-hidden="true"></canvas>
+<div class="hero-shade" aria-hidden="true"></div>
+<div class="hero-t" aria-hidden="true"><span class="mono">transform()</span></div>
+<div class="hero-legend mono" aria-hidden="true"><span>Raw events</span><span>Clean lanes</span></div>
+<div class="wrap">
+<ul class="hero-kick mono"><li>Senior Data Engineer</li><li>Berlin, Germany</li><li>Available immediately</li></ul>
+<h1 class="hero-name" aria-label="Yunus Alper Körükcü">
+<span class="hero-first" aria-hidden="true">Yunus</span>
+<span class="hero-line" aria-hidden="true"><span class="ch"><span class="ch-i">A</span></span><span class="ch"><span class="ch-i">L</span></span><span class="ch"><span class="ch-i">P</span></span><span class="ch"><span class="ch-i">E</span></span><span class="ch"><span class="ch-i">R</span></span></span>
+<span class="hero-line" aria-hidden="true"><span class="ch"><span class="ch-i">K</span></span><span class="ch"><span class="ch-i">Ö</span></span><span class="ch"><span class="ch-i">R</span></span><span class="ch"><span class="ch-i">Ü</span></span><span class="ch"><span class="ch-i">K</span></span><span class="ch"><span class="ch-i">C</span></span><span class="ch"><span class="ch-i">Ü</span></span></span>
+</h1>
+<div class="hero-row">
+<ul class="beats" aria-label="Highlights">
+<li class="beat"><b>20 TB</b> a day.</li>
+<li class="beat"><b>99.9%</b> availability.</li>
+<li class="beat"><b>Zero</b> downtime.</li>
+</ul>
+<div class="hero-side">
+<p class="hero-sub">Google Cloud Certified Professional Data Engineer with 7+ years of streaming, CDC and batch pipelines across telecom, banking and energy.</p>
+<div class="btns">
+<a class="btn btn--solid mag" href="#work" data-cursor="Go">See the work <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"></path></svg></a>
+<a class="btn mag" href="#contact" data-cursor="Hello">Get in touch</a>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-scroll mono" aria-hidden="true"><span>Scroll</span><i></i></div>
+</section>
 
-                <!-- Mobile Theme Toggle -->
-                <button id="theme-toggle-mobile" type="button"
-                    class="text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 w-full text-left px-3 py-3 rounded-md text-base flex items-center">
-                    <i id="theme-toggle-icon-mobile" class="fas fa-sun mr-3 w-5"></i>
-                    <span>Toggle Theme</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+<section class="sec" id="about" aria-labelledby="aboutT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">02</span><span class="sec-stage" data-scr="">Ingest</span><span class="sec-rule"></span><span id="aboutT">About</span></div>
+<div class="about-grid">
+<div class="about-main">
+<p class="manifesto"><span class="w">I</span> <span class="w">build</span> <span class="w">data</span> <span class="w">platforms</span> <span class="w">that</span> <span class="w">stay</span> <span class="hl"><span class="w">correct</span> <span class="w">at</span> <span class="w">scale</span></span><span class="w">.</span> <span class="w">As</span> <span class="w">technical</span> <span class="w">owner</span> <span class="w">and</span> <span class="w">architect</span> <span class="w">of</span> <span class="w">the</span> <span class="w">Vodafone</span> <span class="w">Digital</span> <span class="w">Data</span> <span class="w">Store,</span> <span class="w">I</span> <span class="w">kept</span> <span class="hl"><span class="w">20</span> <span class="w">TB</span> <span class="w">a</span> <span class="w">day</span></span> <span class="w">flowing</span> <span class="w">at</span> <span class="hl"><span class="w">99.9%</span> <span class="w">availability</span></span><span class="w">,</span> <span class="w">with</span> <span class="w">validation,</span> <span class="w">alarms</span> <span class="w">and</span> <span class="w">monitoring</span> <span class="w">built</span> <span class="w">into</span> <span class="w">the</span> <span class="w">pipeline</span> <span class="w">itself.</span></p>
+<div class="about-copy">
+<p class="rv">My work sits where streaming meets modeling: Oracle GoldenGate CDC into Apache Kafka, Spark Structured Streaming with checkpointing, restart and replay, and analytics-ready models served through Apache Impala.</p>
+<p class="rv">I led a team of three engineers, set our engineering standards and mentored two junior colleagues to mid-level. I work spec-first with AI assistance, and every output is reviewed and validated before it merges.</p>
+</div>
+</div>
+<div class="about-side">
+<figure class="portrait" data-cursor="Data view">
+<img src="assets/img/alper-portrait.jpg" alt="Portrait of Yunus Alper Körükcü" width="900" height="900" decoding="async">
+<canvas aria-hidden="true"></canvas>
+<figcaption class="mono"><span>Y.A. Körükcü</span><span>Berlin</span></figcaption>
+</figure>
+<dl class="facts">
+<dt class="mono">Location</dt><dd>Berlin, Germany</dd>
+<dt class="mono">Experience</dt><dd>7+ years</dd>
+<dt class="mono">Work permit</dt><dd>EU Blue Card, no sponsorship needed</dd>
+<dt class="mono">Availability</dt><dd>Immediately</dd>
+<dt class="mono">Languages</dt><dd>English (fluent), Turkish (native), German (A1, learning)</dd>
+<dt class="mono">Education</dt><dd>BSc Computer Engineering, Karabük University</dd>
+</dl>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Hero Section -->
-    <section id="home" class="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden px-4">
-        <!-- Background decoration -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        </div>
+<section class="sec" id="work" aria-labelledby="ddsT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">03</span><span class="sec-stage" data-scr="">Transform</span><span class="sec-rule"></span><span>Selected work</span></div>
+<div class="dds-head">
+<div>
+<p class="dds-kick mono">Case file 01 · Bentego, client Vodafone · 2022–2026</p>
+<h2 class="dds-title" id="ddsT"><span class="mask"><span class="mask-i">Vodafone</span></span><span class="mask"><span class="mask-i">Digital Data</span></span><span class="mask"><span class="mask-i">Store</span></span></h2>
+</div>
+<p class="lede rv">I was the technical owner and architect of the platform: 20 TB of daily data at 99.9% availability. I led its modernization with zero downtime, validated by running old and new versions side by side on real traffic.</p>
+</div>
+</div>
+<div class="dds-track">
+<div class="dds-pin">
+<div class="dds-stage">
+<div class="dds-meta mono"><span>Pipeline stage <b class="rd" data-v="01 / 10"></b></span><span>Scroll to advance</span></div>
+<div class="dds-cam">
+<svg class="dds-svg" viewBox="0 0 1400 720" role="img" aria-label="Pipeline: Oracle, GoldenGate CDC, Kafka, Spark Structured Streaming, Kafka topics, Impala and Superset, with HBase and Hive storage, Airflow scheduling and data quality checks.">
+<path class="pipe" d="M100 340 H1240"></path>
+<path class="pipe-glow dds-bus" d="M100 340 H1240"></path>
+<path class="pipe dds-branch" d="M720 388 C720 470 735 560 800 560 H920 C985 560 1050 470 1050 388"></path>
+<path class="pipe-dash dds-sched" d="M670 162 V292"></path>
+<path class="rail dds-rail" d="M40 672 H1360"></path>
+<g class="dds-raildots"><circle class="rail-dot" cx="100" cy="672" r="4"></circle><circle class="rail-dot" cx="290" cy="672" r="4"></circle><circle class="rail-dot" cx="480" cy="672" r="4"></circle><circle class="rail-dot" cx="670" cy="672" r="4"></circle><circle class="rail-dot" cx="860" cy="672" r="4"></circle><circle class="rail-dot" cx="1050" cy="672" r="4"></circle><circle class="rail-dot" cx="1240" cy="672" r="4"></circle></g>
+<text class="rail-t dds-railt" x="40" y="704">VALIDATION · ALARMS · MONITORING · DATA QUALITY</text>
+<g class="dds-pks"><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-bus"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-br"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g><g class="pk pk-br"><rect x="-9" y="-9" width="18" height="18" opacity=".22"></rect><rect x="-4" y="-4" width="8" height="8"></rect></g></g>
+<g class="nd" data-n="0" transform="translate(100 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">01</text><text class="nd-t" y="8">Oracle</text><text class="nd-s" y="31">SOURCE</text></g>
+<g class="nd" data-n="1" transform="translate(290 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">02</text><text class="nd-t" y="8">GoldenGate</text><text class="nd-s" y="31">CDC</text></g>
+<g class="nd" data-n="2" transform="translate(480 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">03</text><text class="nd-t" y="8">Kafka</text><text class="nd-s" y="31">EVENT BUS</text></g>
+<g class="nd" data-n="3" transform="translate(670 340)"><rect x="-85" y="-48" width="170" height="96" rx="12"></rect><text class="nd-i" x="-72" y="-29">04</text><text class="nd-t" y="8">Spark</text><text class="nd-s" y="31">STRUCTURED STREAMING</text></g>
+<g class="nd" data-n="4" transform="translate(860 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">05</text><text class="nd-t" y="8">Kafka</text><text class="nd-s" y="31">TOPICS</text></g>
+<g class="nd" data-n="5" transform="translate(860 560)"><rect x="-105" y="-48" width="210" height="96" rx="12"></rect><text class="nd-i" x="-92" y="-29">06</text><text class="nd-t" y="8">HBase · Hive</text><text class="nd-s" y="31">ROW KEYS · PARTITIONS</text></g>
+<g class="nd" data-n="6" transform="translate(1050 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">07</text><text class="nd-t" y="8">Impala</text><text class="nd-s" y="31">SERVE</text></g>
+<g class="nd" data-n="7" transform="translate(1240 340)"><rect x="-75" y="-48" width="150" height="96" rx="12"></rect><text class="nd-i" x="-62" y="-29">08</text><text class="nd-t" y="8">Superset</text><text class="nd-s" y="31">DASHBOARDS</text></g>
+<g class="nd" data-n="8" transform="translate(670 130)"><rect x="-160" y="-32" width="320" height="64" rx="32"></rect><text class="nd-i" x="-132" y="5">09</text><text class="nd-t" y="2">Airflow</text><text class="nd-s" y="22">SCHEDULING · MONITORING UI</text></g>
+</svg>
+</div>
+<ol class="dds-steps">
+<li class="dds-step"><span class="mono">01</span><h3>Oracle sources</h3><p>Operational data starts in Oracle source systems.</p></li>
+<li class="dds-step"><span class="mono">02</span><h3>GoldenGate CDC</h3><p>Oracle GoldenGate captures each change and streams it into Kafka.</p></li>
+<li class="dds-step"><span class="mono">03</span><h3>Apache Kafka</h3><p>Kafka carries the change stream, with producer settings tuned on the write path.</p></li>
+<li class="dds-step"><span class="mono">04</span><h3>Spark Structured Streaming</h3><p>Streaming transformations with checkpointing, restart and replay for failure recovery.</p></li>
+<li class="dds-step"><span class="mono">05</span><h3>Kafka topics</h3><p>Processed events land in Kafka topics on the way to the serving layer.</p></li>
+<li class="dds-step"><span class="mono">06</span><h3>HBase and Hive</h3><p>HBase row keys and Hive partitioning designed for query performance.</p></li>
+<li class="dds-step"><span class="mono">07</span><h3>Apache Impala</h3><p>Analytics-ready models served through Impala, partitioned for fast reads.</p></li>
+<li class="dds-step"><span class="mono">08</span><h3>Apache Superset</h3><p>Reporting dashboards for five stakeholders.</p></li>
+<li class="dds-step"><span class="mono">09</span><h3>Airflow and data quality</h3><p>Streaming jobs scheduled on Airflow for one monitoring UI, with alarm, monitoring and data quality ETLs across the flow.</p></li>
+<li class="dds-step"><span class="mono">10</span><h3>The outcome</h3><p>10× throughput and 40% lower latency on the critical pipeline, delivered with zero downtime.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="wrap">
+<ul class="res">
+<li><span class="res-n"><span class="cnt" data-to="10" data-dec="0">10</span><span class="res-suf">×</span></span><div><p class="res-l">Throughput on the critical DDS pipeline after the modernization</p><div class="res-seg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></li>
+<li><span class="res-n"><span class="cnt" data-to="40" data-dec="0">40</span><span class="res-suf">%</span></span><div><p class="res-l">Lower latency on the same pipeline</p><div class="res-bar" aria-hidden="true"><i style="--f: 0.4"></i></div></div></li>
+<li><span class="res-n"><span class="cnt" data-to="20" data-dec="0">20</span><span class="res-suf">TB</span></span><div><p class="res-l">Of data processed every day</p></div></li>
+<li><span class="res-n"><span class="cnt" data-to="99.9" data-dec="1">99.9</span><span class="res-suf">%</span></span><div><p class="res-l">Availability, with validation and alarms built in</p><div class="res-bar" aria-hidden="true"><i style="--f: 0.999"></i></div></div></li>
+</ul>
+<div class="proofs">
+<div class="pf">
+<div class="pf-top"><p class="pf-n">60<svg class="ic pf-arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg><span>15</span></p><p class="pf-l">Spark jobs consolidated</p></div>
+<div class="pf-viz"><div class="merge" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+</div>
+<div class="pf">
+<div class="pf-top"><p class="pf-n"><span>25%</span></p><p class="pf-l">Of a 99-node cluster’s resources freed</p></div>
+<div class="pf-viz"><div class="cluster" aria-hidden="true">
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+<i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i><i><b></b><b></b><b></b><b></b><u></u></i>
+</div></div>
+</div>
+<div class="pf">
+<div class="pf-top"><p class="pf-n">0<span>s</span></p><p class="pf-l">Downtime. Old and new versions ran side by side on real traffic before the switch.</p></div>
+<div class="pf-viz">
+<div class="sw" aria-hidden="true">
+<div class="sw-lane is-live" data-lane="old"><span class="sw-tag mono">v1 · current</span><span class="sw-track"><i></i><i></i><i></i><i></i><i></i></span><span class="sw-st mono rd" data-v="serving"></span></div>
+<div class="sw-lane" data-lane="new"><span class="sw-tag mono">v2 · modernized</span><span class="sw-track"><i></i><i></i><i></i><i></i><i></i></span><span class="sw-st mono rd" data-v="shadow"></span></div>
+<div class="sw-read mono"><span>Downtime</span><b class="rd" data-v="0.000 s"></b></div>
+</div>
+</div>
+</div>
+<div class="pf">
+<div class="pf-top"><p class="pf-n">Team <span>3</span></p><p class="pf-l">Led three engineers and mentored two junior colleagues to mid-level.</p></div>
+<div class="pf-viz">
+<svg class="team" viewBox="0 0 360 200" aria-hidden="true">
+<path class="tm-l" d="M180 52 L70 146"></path><path class="tm-l" d="M180 52 L180 146"></path><path class="tm-l" d="M180 52 L290 146"></path>
+<circle class="tm-up" cx="70" cy="146" r="30"></circle><circle class="tm-up" cx="180" cy="146" r="30"></circle>
+<circle class="tm-n tm-lead" cx="180" cy="52" r="16"></circle>
+<circle class="tm-n" cx="70" cy="146" r="16"></circle><circle class="tm-n" cx="180" cy="146" r="16"></circle><circle class="tm-n" cx="290" cy="146" r="16"></circle>
+<text class="tm-t acid" x="180" y="18">LEAD</text>
+<text class="tm-t tm-lv" x="70" y="196">NOW MID-LEVEL</text><text class="tm-t tm-lv" x="180" y="196">NOW MID-LEVEL</text><text class="tm-t" x="290" y="196">ENGINEER</text>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mq" aria-label="Core technologies">
+<div class="mq-row" data-dir="-1"><span>Apache Kafka</span><span class="x">/</span><span class="o">Spark Structured Streaming</span><span class="x">/</span><span>Airflow</span><span class="x">/</span><span class="o">BigQuery</span><span class="x">/</span><span>GoldenGate</span><span class="x">/</span><span>Apache Kafka</span><span class="x">/</span><span class="o">Spark Structured Streaming</span><span class="x">/</span><span>Airflow</span><span class="x">/</span><span class="o">BigQuery</span><span class="x">/</span><span>GoldenGate</span><span class="x">/</span></div>
+<div class="mq-row" data-dir="1"><span class="o">Impala</span><span class="x">/</span><span>Hive</span><span class="x">/</span><span class="o">HBase</span><span class="x">/</span><span>PostgreSQL</span><span class="x">/</span><span class="o">Python</span><span class="x">/</span><span>SQL</span><span class="x">/</span><span class="o">Superset</span><span class="x">/</span><span class="o">Impala</span><span class="x">/</span><span>Hive</span><span class="x">/</span><span class="o">HBase</span><span class="x">/</span><span>PostgreSQL</span><span class="x">/</span><span class="o">Python</span><span class="x">/</span><span>SQL</span><span class="x">/</span><span class="o">Superset</span><span class="x">/</span></div>
+</section>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center">
-                <h2 class="text-emerald-500 dark:text-emerald-400 font-mono text-sm mb-4 tracking-widest uppercase">
-                    Google Cloud Certified Professional Data Engineer</h2>
-                <h1
-                    class="text-4xl sm:text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
-                    Yunus Alper Körükcü
-                </h1>
-                <p class="mt-4 max-w-2xl mx-auto text-lg sm:text-xl text-slate-600 dark:text-slate-400">
-                    Based in Berlin. I architect robust data pipelines, optimize cloud-native data warehouses, and build
-                    high-volume, real-time streaming solutions.
-                </p>
-                <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="https://www.linkedin.com/in/yunus-alper-korukcu/" target="_blank"
-                        class="px-8 py-3 border border-transparent text-base font-medium rounded-md text-slate-900 bg-emerald-400 hover:bg-emerald-500 sm:py-4 sm:text-lg sm:px-10 transition-all flex items-center justify-center">
-                        <i class="fab fa-linkedin mr-3"></i> Connect on LinkedIn
-                    </a>
-                    <a href="https://alper-korukcu.medium.com/" target="_blank"
-                        class="px-8 py-3 border border-slate-300 text-base font-medium rounded-md text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800 sm:py-4 sm:text-lg sm:px-10 transition-all flex items-center justify-center">
-                        <i class="fab fa-medium mr-3"></i> Read My Blog
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<section class="sec" id="lineage" aria-labelledby="expT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">04</span><span class="sec-stage" data-scr="">Lineage</span><span class="sec-rule"></span><span>2019–2026</span></div>
+<div class="flight-top">
+<h2 class="sec-title" id="expT"><span class="mask"><span class="mask-i">Experience</span></span></h2>
+<p class="lede rv">Seven years across energy, banking and telecom. Scroll to fly through them in order.</p>
+</div>
+</div>
+<div class="flight">
+<div class="flight-view">
+<div class="flight-floor" aria-hidden="true"></div>
+<div class="flight-world">
+<span class="fy" aria-hidden="true">2019</span>
+<span class="fy" aria-hidden="true">2021</span>
+<span class="fy" aria-hidden="true">2022</span>
+<span class="fy" aria-hidden="true">2026</span>
+<article class="role">
+<p class="role-when mono">11/2019 – 05/2021 · Energy</p>
+<h3>Software Developer</h3>
+<p class="role-at">CK Enerji</p>
+<ul class="role-pts">
+<li>Built Apache Kafka based real-time pipelines for billing and smart meter data from millions of endpoints, where data correctness directly affected customers.</li>
+<li>Developed backend services and REST APIs in Java and C# (.NET Core), deployed with Docker.</li>
+</ul>
+<ul class="chips"><li class="chip">Kafka</li><li class="chip">Java</li><li class="chip">C# / .NET Core</li><li class="chip">PostgreSQL</li><li class="chip">MS SQL</li><li class="chip">Docker</li></ul>
+</article>
+<article class="role">
+<p class="role-when mono">05/2021 – 07/2022 · Banking</p>
+<h3>Big Data Engineer</h3>
+<p class="role-at">Bentego · Client: Garanti BBVA Teknoloji</p>
+<ul class="role-pts">
+<li>Built production data pipelines and dimensional models for credit risk and financial analytics at one of Turkey’s largest banks, working with analysts, risk and finance stakeholders.</li>
+<li>Kept data quality, consistency and security under banking-grade regulatory compliance, with validation and lineage documentation.</li>
+</ul>
+<ul class="chips"><li class="chip">SQL</li><li class="chip">Oracle Data Integrator</li><li class="chip">Apache Spark</li><li class="chip">Hadoop</li><li class="chip">PostgreSQL</li><li class="chip">Python</li></ul>
+</article>
+<article class="role">
+<p class="role-when mono">07/2022 – 08/2026 · Telecom</p>
+<h3>Senior Big Data Engineer</h3>
+<p class="role-at">Bentego · Client: Vodafone · Berlin</p>
+<ul class="role-pts">
+<li>Technical owner and architect of the Vodafone Digital Data Store: 20 TB a day at 99.9% availability.</li>
+<li>Led a zero-downtime platform modernization: 10× throughput and 40% lower latency on the critical pipeline.</li>
+<li>Consolidated 60 Spark jobs into 15 and freed 25% of a 99-node cluster’s resources.</li>
+<li>Led a team of three engineers, set engineering standards and mentored two junior colleagues to mid-level.</li>
+</ul>
+<ul class="chips"><li class="chip">Kafka</li><li class="chip">Spark Structured Streaming</li><li class="chip">GoldenGate</li><li class="chip">Impala</li><li class="chip">Hive</li><li class="chip">HBase</li><li class="chip">Airflow</li><li class="chip">Superset</li></ul>
+</article>
+</div>
+<div class="flight-hud mono" aria-hidden="true">
+<span>Year <b class="tick"><span class="tick-c"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span><span class="tick-c"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span><span class="tick-c"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span><span class="tick-c"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span></b></span>
+<span class="flight-bar"><i></i></span>
+<span class="rd flight-n" data-v="01 / 03"></span>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="py-20 bg-slate-50 dark:bg-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
-                <div class="mb-10 lg:mb-0 relative flex justify-center items-center">
-                    <div
-                        class="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full blur opacity-50 dark:opacity-50">
-                    </div>
-                    <img src="1761241730343.jpg" alt="Yunus Alper Körükcü"
-                        class="relative z-10 w-64 h-64 sm:w-80 sm:h-80 rounded-full object-cover border-8 border-slate-50 dark:border-slate-800 shadow-2xl">
-                </div>
-                <div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-6">Bridging the Gap
-                        Between Data & Decision</h2>
-                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                        With over 7 years of experience in the data landscape, I specialize in designing, building, and
-                        maintaining high-performance data systems. Living and working in Berlin, I thrive on tackling
-                        complex architectural challenges.
-                    </p>
-                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-                        Whether it's optimizing ETL pipelines (ODI), managing massive-scale streaming data (Kafka,
-                        Spark), or implementing cloud-native data warehouses (BigQuery), I focus on creating reliable
-                        infrastructure that empowers business intelligence.
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-700 dark:text-slate-300">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-                            <span>Real-time Streaming</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-                            <span>Cloud Data Warehousing (GCP)</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-                            <span>ETL/ELT Optimization</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-                            <span>Big Data Architecture</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<section class="sec" id="schema" aria-labelledby="stackT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">05</span><span class="sec-stage" data-scr="">Schema</span><span class="sec-rule"></span><span>Tools I use in production</span></div>
+<h2 class="sec-title" id="stackT"><span class="mask"><span class="mask-i">Stack</span></span></h2>
+<div class="stack-grid">
+<div class="sg"><p class="sg-k mono">01 · streaming</p><h3>Streaming &amp; Pipelines</h3><ul class="tags"><li class="tag">Apache Kafka</li><li class="tag">Spark Structured Streaming</li><li class="tag">Apache Spark</li><li class="tag">Oracle GoldenGate CDC</li><li class="tag">Checkpointing, restart, replay</li></ul></div>
+<div class="sg"><p class="sg-k mono">02 · modeling</p><h3>SQL &amp; Data Modeling</h3><ul class="tags"><li class="tag">SQL</li><li class="tag">Performance tuning</li><li class="tag">Relational modeling</li><li class="tag">Dimensional modeling</li><li class="tag">Analytics-ready models</li><li class="tag">Tested SQL transformations</li></ul></div>
+<div class="sg"><p class="sg-k mono">03 · storage</p><h3>Databases &amp; Warehouses</h3><ul class="tags"><li class="tag">BigQuery</li><li class="tag">PostgreSQL</li><li class="tag">Oracle</li><li class="tag">MySQL</li><li class="tag">MS SQL</li><li class="tag">Apache Impala</li><li class="tag">Apache Hive</li><li class="tag">HBase</li></ul></div>
+<div class="sg"><p class="sg-k mono">04 · quality</p><h3>Data Quality</h3><ul class="tags"><li class="tag">Validation in pipelines</li><li class="tag">Alarm and monitoring ETLs</li><li class="tag">Lineage documentation</li></ul></div>
+<div class="sg"><p class="sg-k mono">05 · delivery</p><h3>Orchestration &amp; Delivery</h3><ul class="tags"><li class="tag">Apache Airflow</li><li class="tag">Docker</li><li class="tag">Git</li><li class="tag">CI/CD</li><li class="tag">GitHub, GitLab, Bitbucket</li><li class="tag">Linux</li></ul></div>
+<div class="sg"><p class="sg-k mono">06 · languages</p><h3>Languages</h3><ul class="tags"><li class="tag">Python</li><li class="tag">PyTest</li><li class="tag">SQL</li><li class="tag">Java</li><li class="tag">C#</li></ul></div>
+<div class="sg"><p class="sg-k mono">07 · cloud</p><h3>Cloud &amp; Reporting</h3><ul class="tags"><li class="tag">Google Cloud Platform</li><li class="tag">BigQuery</li><li class="tag">Apache Superset</li><li class="tag">JIRA</li></ul></div>
+<div class="sg"><p class="sg-k mono">08 · ai</p><h3>AI-Assisted Engineering</h3><ul class="tags"><li class="tag">Spec-driven development</li><li class="tag">Agentic work with Claude</li><li class="tag">Review before merge</li></ul></div>
+</div>
+<div class="stack-foot"><span class="mono">Grouped by pipeline layer</span><button class="btn mag" type="button" data-rescatter="" data-cursor="Replay">Re-run the job</button></div>
+</div>
+</section>
 
-    <!-- Beyond the Data Section -->
-    <section id="beyond" class="py-20 bg-white dark:bg-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Beyond the Data</h2>
-                <p class="mt-4 max-w-2xl mx-auto text-slate-600 dark:text-slate-400">When I'm not architecting
-                    pipelines, you can find me...</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- Interest 1: Space -->
-                <div
-                    class="text-center p-6 bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700/50 rounded-xl interest-card transition-all">
-                    <i class="fas fa-rocket text-4xl text-emerald-500 dark:text-emerald-400 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Space & Physics</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Authoring articles on the cosmos, from distant stars
-                        to complex physics.</p>
-                </div>
-                <!-- Interest 2: Cars -->
-                <div
-                    class="text-center p-6 bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700/50 rounded-xl interest-card transition-all">
-                    <i class="fas fa-car text-4xl text-emerald-500 dark:text-emerald-400 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Car Enthusiast</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Following the latest in auto tech and performance.</p>
-                </div>
-                <!-- Interest 3: D&D -->
-                <div
-                    class="text-center p-6 bg-slate-50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700/50 rounded-xl interest-card transition-all">
-                    <i class="fas fa-dice-d20 text-4xl text-emerald-500 dark:text-emerald-400 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">D&D World-Builder</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Crafting intricate worlds and epic campaigns as a
-                        dedicated Dungeon Master.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<section class="sec" id="certs" aria-labelledby="certT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">06</span><span class="sec-stage" data-scr="">Checkpoint</span><span class="sec-rule"></span><span>Certifications</span></div>
+<h2 class="sec-title" id="certT"><span class="mask"><span class="mask-i">Certified</span></span></h2>
+<div class="cert-wrap">
+<div>
+<ul class="cert-list">
+<li><a href="https://www.credly.com/badges/cdc564c0-b777-48c7-b67f-b3aec0de7cad/public_url" target="_blank" rel="noopener" data-cursor="Verify"><strong>Cloudera Technical Professional (CTP)</strong><span class="mono">11/2024</span></a></li>
+<li><a href="https://www.credly.com/badges/25ffddf4-8ef5-4020-aa01-128397a34050" target="_blank" rel="noopener" data-cursor="Verify"><strong>Google Cloud Skill Badge: Discover and Protect Sensitive Data Across Your Ecosystem</strong><span class="mono">09/2026</span><small>Sensitive Data Protection, Cloud DLP API, de-identification in BigQuery and Cloud Storage</small></a></li>
+<li><a href="https://www.credly.com/badges/d4a39e15-9b58-4a22-98b6-c8b2d18b188e" target="_blank" rel="noopener" data-cursor="Verify"><strong>Google Cloud Skill Badge: Implement Event-Driven Messaging and Automation Workflows</strong><span class="mono">09/2026</span><small>Pub/Sub, Cloud Scheduler</small></a></li>
+<li><div class="cl"><strong>BigQuery Data Warehouse, Streaming Analytics, ML APIs</strong><span class="mono">Google Cloud · 2024</span></div></li>
+<li><div class="cl"><strong>Apache Airflow, Apache Spark with Python</strong><span class="mono">Udemy · 2022</span></div></li>
+</ul>
+</div>
+<div class="cert-stage">
+<a class="cert-card" href="https://www.credly.com/badges/be36d3e6-5b3d-47f6-8c2d-30668b18fbe5/public_url" target="_blank" rel="noopener" data-cursor="Verify" aria-label="Google Cloud Certified Professional Data Engineer, verify on Credly">
+<span class="cert-holo" aria-hidden="true"></span><span class="cert-glare" aria-hidden="true"></span><span class="cert-sheen" aria-hidden="true"></span>
+<span class="cert-row"><span class="mono">Google Cloud Certified</span><span class="cert-chip" aria-hidden="true"></span></span>
+<span class="cert-name">Professional<br>Data Engineer</span>
+<span class="cert-meta"><span class="mono">Issued 12/2024 · Renewed · Valid through 12/2027</span><span class="mono">Verify on Credly</span></span>
+</a>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Stack Section -->
-    <section id="stack" class="py-20 bg-slate-50 dark:bg-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Technical Arsenal</h2>
-                <p class="mt-4 max-w-2xl mx-auto text-slate-600 dark:text-slate-400">The tools and technologies I use to
-                    build data solutions.</p>
-            </div>
+<section class="sec" id="writing" aria-labelledby="writeT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">07</span><span class="sec-stage" data-scr="">Publish</span><span class="sec-rule"></span><span>Notes from production, on Medium</span></div>
+<h2 class="sec-title" id="writeT"><span class="mask"><span class="mask-i">Writing</span></span></h2>
+<ol class="posts">
+<li><a class="post" href="https://alper-korukcu.medium.com/pyspark-patterns-that-make-production-pipelines-faster-b525d38fbf56" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">01</span><span class="post-t">PySpark Patterns That Make Production Pipelines Faster</span><span class="post-d mono">Apr 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/stop-writing-python-scripts-start-writing-data-pipelines-758dd7189e76" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">02</span><span class="post-t">Stop Writing Python Scripts, Start Writing Data Pipelines</span><span class="post-d mono">Apr 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/your-airflow-dags-are-just-expensive-cron-jobs-f2fcf43f3cea" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">03</span><span class="post-t">Your Airflow DAGs Are Just Expensive Cron Jobs</span><span class="post-d mono">Mar 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/building-a-data-platform-from-scratch-what-i-wish-someone-had-told-me-9406adc9c0bd" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">04</span><span class="post-t">Building a Data Platform from Scratch: What I Wish Someone Had Told Me</span><span class="post-d mono">Mar 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/kafka-vs-flink-vs-spark-streaming-what-nobody-tells-you-before-you-pick-one-aa83c26a287a" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">05</span><span class="post-t">Kafka vs Flink vs Spark Streaming: What Nobody Tells You Before You Pick One</span><span class="post-d mono">Mar 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/7-things-most-data-engineers-get-wrong-about-spark-performance-e677ab1f91a3" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">06</span><span class="post-t">7 Things Most Data Engineers Get Wrong About Spark Performance</span><span class="post-d mono">Mar 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/the-data-engineer-role-in-2026-whats-actually-changing-and-what-s-just-noise-6eeeddd809b9" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">07</span><span class="post-t">The Data Engineer Role in 2026: What’s Actually Changing and What’s Just Noise</span><span class="post-d mono">Mar 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/small-files-big-problems-the-silent-killer-of-data-lake-performance-a448db657c94" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">08</span><span class="post-t">Small Files, Big Problems: The Silent Killer of Data Lake Performance</span><span class="post-d mono">Feb 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/apache-iceberg-vs-delta-lake-vs-hudi-the-real-differences-nobody-explains-simply-802eebe1d6e8" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">09</span><span class="post-t">Apache Iceberg vs Delta Lake vs Hudi: The Real Differences Nobody Explains Simply</span><span class="post-d mono">Feb 2026</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="post" href="https://alper-korukcu.medium.com/streaming-with-continuous-airflow-c9a00a12d433" target="_blank" rel="noopener" data-cursor="Read"><span class="post-no mono">10</span><span class="post-t">Streaming with Continuous Airflow</span><span class="post-d mono">Aug 2025</span><svg class="ic post-a" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+</ol>
+<div class="writing-foot"><a class="btn mag" href="https://alper-korukcu.medium.com/" target="_blank" rel="noopener" data-cursor="Open">All articles on Medium <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></div>
+</div>
+</section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 tech-card transition-all">
-                    <div
-                        class="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4 text-yellow-500 dark:text-yellow-400 text-2xl">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Languages</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Python, SQL, Java, C#, Shell Scripting</p>
-                </div>
+<section class="sec" id="beyond" aria-labelledby="beyondT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">08</span><span class="sec-stage" data-scr="">Offline</span><span class="sec-rule"></span><span>Beyond the data</span></div>
+<h2 class="sec-title" id="beyondT"><span class="mask"><span class="mask-i">Off the clock</span></span></h2>
+<div class="beyond">
+<div>
+<ul class="likes">
+<li class="like" data-like="0"><span class="mono">01</span><h3>Space and physics</h3><p>I write about the cosmos, from distant stars to the physics behind them.</p></li>
+<li class="like" data-like="1"><span class="mono">02</span><h3>Cars</h3><p>Following the latest in automotive tech and performance.</p></li>
+<li class="like" data-like="2"><span class="mono">03</span><h3>Dungeons &amp; Dragons</h3><p>Building worlds and running campaigns as a Dungeon Master.</p></li>
+</ul>
+</div>
+<div class="orbit" aria-hidden="true">
+<div class="orb-ring"></div><div class="orb-ring r2"></div>
+<div class="orb-core"></div>
+<div class="orb-sat s1"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><ellipse cx="12" cy="12" rx="10.5" ry="3.6" transform="rotate(-22 12 12)"></ellipse></svg></div>
+<div class="orb-sat s2"><svg class="ic" viewBox="0 0 24 24"><path d="M2.5 15.5v-2.8l2.3-4.2h8.9l4.3 4.2h3.5v2.8"></path><path d="M5.2 12.7h13.3"></path><circle cx="7" cy="16" r="2"></circle><circle cx="17.2" cy="16" r="2"></circle></svg></div>
+<div class="orb-sat s3"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2.5l8.3 4.8v9.4L12 21.5l-8.3-4.8V7.3z"></path><path d="M12 7.2l4.3 7.4H7.7z"></path><path d="M12 2.5v4.7M3.7 7.3l4 7.3M20.3 7.3l-4 7.3M7.7 14.6l-4 2.1M16.3 14.6l4 2.1M7.7 14.6L12 21.5M16.3 14.6L12 21.5"></path></svg></div>
+</div>
+</div>
+</div>
+</section>
 
-                <!-- Card 2 -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 tech-card transition-all">
-                    <div
-                        class="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4 text-blue-500 dark:text-blue-400 text-2xl">
-                        <i class="fab fa-google"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Cloud & DevOps</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">GCP (BigQuery, Storage, PubSub), Docker, Git,
-                        Bitbucket</p>
-                </div>
+<section class="sec contact" id="contact" aria-labelledby="contactT">
+<div class="wrap">
+<div class="sec-head mono"><span class="sec-no" data-scr="">09</span><span class="sec-stage" data-scr="">Sink</span><span class="sec-rule"></span><span>Contact</span></div>
+<h2 class="depth" id="contactT" aria-label="Let’s talk">
+<span class="depth-l dl6" style="--i: 6" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-l dl5" style="--i: 5" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-l dl4" style="--i: 4" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-l dl3" style="--i: 3" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-l dl2" style="--i: 2" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-l dl1" style="--i: 1" aria-hidden="true">Let’s<br>talk</span>
+<span class="depth-f" aria-hidden="true">Let’s<br>talk</span>
+</h2>
+<div class="contact-grid">
+<div>
+<p class="contact-line">Open to Senior Data Engineer and Data Platform Engineer roles.</p>
+<ul class="avail"><li>Berlin, Germany</li><li>EU Blue Card holder</li><li>Available immediately</li><li>No visa sponsorship required</li></ul>
+</div>
+<div class="reach">
+<a class="mail mag" href="mailto:alperkorukcu@gmail.com" data-cursor="Write">alperkorukcu@gmail.com <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a>
+<div class="links">
+<button class="btn mag" type="button" data-copy="alperkorukcu@gmail.com" data-cursor="Copy" aria-label="Copy email address"><span class="rd copy-l" data-v="Copy email"></span></button>
+<a class="btn mag" href="https://www.linkedin.com/in/yunus-alper-korukcu/" target="_blank" rel="noopener" data-cursor="Open">LinkedIn</a>
+<a class="btn mag" href="https://alper-korukcu.medium.com/" target="_blank" rel="noopener" data-cursor="Open">Medium</a>
+<a class="btn mag" href="https://github.com/alperkorukcu" target="_blank" rel="noopener" data-cursor="Open">GitHub</a>
+</div>
+</div>
+</div>
+<footer class="foot mono"><span>© 2026 Yunus Alper Körükcü</span><span>Berlin, Germany</span><a href="#top" data-cursor="Top">Back to top</a></footer>
+</div>
+</section>
 
-                <!-- Card 3 -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 tech-card transition-all">
-                    <div
-                        class="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4 text-orange-500 dark:text-orange-400 text-2xl">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Databases & Warehouses</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">BigQuery, PostgreSQL, Oracle, HBase, MongoDB,
-                        SQL Server</p>
-                </div>
-
-                <!-- Card 4 -->
-                <div
-                    class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 tech-card transition-all">
-                    <div
-                        class="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4 text-red-500 dark:text-red-400 text-2xl">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Big Data Ecosystem</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Apache Spark, Kafka, Airflow, Hadoop, Hive,
-                        Impala, ODI, Phoenix</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Certifications Section -->
-    <section id="certifications" class="py-20 bg-slate-50 dark:bg-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Certifications & Credentials
-                </h2>
-                <p class="mt-4 max-w-2xl mx-auto text-slate-600 dark:text-slate-400">Validated expertise in cloud and
-                    data platforms.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <!-- GCP Certification -->
-                <a href="https://www.credly.com/badges/be36d3e6-5b3d-47f6-8c2d-30668b18fbe5/public_url" target="_blank"
-                    rel="noopener noreferrer"
-                    class="block bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none cert-card transition-all flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6">
-                    <div class="flex-shrink-0 mb-4 sm:mb-0">
-                        <img src="https://placehold.co/80x80/94a3b8/0f172a?text=GCP" alt="GCP Logo"
-                            class="h-20 w-20 rounded-full border-4 border-slate-200 dark:border-slate-700">
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-1">Professional Data Engineer
-                        </h3>
-                        <p class="text-slate-600 dark:text-slate-400 font-medium">Google Cloud</p>
-                        <p class="text-sm text-slate-500 mt-2">Issued: Dec 2024</p>
-                    </div>
-                </a>
-
-                <!-- Cloudera Certification -->
-                <a href="https://www.credly.com/badges/cdc564c0-b777-48c7-b67f-b3aec0de7cad/public_url" target="_blank"
-                    rel="noopener noreferrer"
-                    class="block bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none cert-card transition-all flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6">
-                    <div class="flex-shrink-0 mb-4 sm:mb-0">
-                        <img src="https://placehold.co/80x80/94a3b8/0f172a?text=CTP" alt="Cloudera Logo"
-                            class="h-20 w-20 rounded-full border-4 border-slate-200 dark:border-slate-700">
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-1">Technical Professional
-                            (CTP)</h3>
-                        <p class="text-slate-600 dark:text-slate-400 font-medium">Cloudera</p>
-                        <p class="text-sm text-slate-500 mt-2">Issued: Nov 2024</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects/Experience -->
-    <section id="projects" class="py-20 bg-white dark:bg-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Experience & Projects</h2>
-                <p class="mt-4 max-w-2xl mx-auto text-slate-600 dark:text-slate-400">A selection of data challenges I've
-                    solved.</p>
-            </div>
-
-            <div class="grid gap-8 lg:grid-cols-3">
-                <!-- Project 1 -->
-                <div
-                    class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none group flex flex-col">
-                    <div
-                        class="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                        <i
-                            class="fas fa-network-wired text-6xl text-slate-400 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors"></i>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Digital Data Store (Vodafone)
-                            </h3>
-                            <span
-                                class="bg-slate-100 dark:bg-slate-800 text-xs text-emerald-500 dark:text-emerald-400 px-2 py-1 rounded font-mono">Spark
-                                / Kafka</span>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium">Role: Senior Big Data Engineer (Consultant)</p>
-                        <p class="text-slate-500 text-xs font-mono mt-1 mb-4">Jul 2022 - Present</p>
-                        <p class="text-slate-600 dark:text-slate-400 mb-4 flex-grow">Architected and optimized
-                            high-volume, real-time streaming pipelines for Vodafone's core analytics platform.
-                            Successfully led the migration of a complex streaming project to a new Hadoop cluster and
-                            built/configured test environments to ensure quality.</p>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div
-                    class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none group flex flex-col">
-                    <div
-                        class="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                        <i
-                            class="fas fa-layer-group text-6xl text-slate-400 dark:text-slate-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"></i>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Credit Risk Prediction
-                                (Garanti)</h3>
-                            <span
-                                class="bg-slate-100 dark:bg-slate-800 text-xs text-blue-500 dark:text-blue-400 px-2 py-1 rounded font-mono">ODI
-                                / Spark</span>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium">Role: Big Data Engineer (Consultant)</p>
-                        <p class="text-slate-500 text-xs font-mono mt-1 mb-4">May 2021 - Jul 2022</p>
-                        <p class="text-slate-600 dark:text-slate-400 mb-4 flex-grow">Developed and optimized ETL
-                            pipelines for predictive analytics in financial risk assessment, enhancing processing
-                            efficiency.</p>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div
-                    class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none group flex flex-col">
-                    <div
-                        class="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                        <i
-                            class="fas fa-file-invoice-dollar text-6xl text-slate-400 dark:text-slate-600 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors"></i>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Billing Web Service (CK Enerji)
-                            </h3>
-                            <span
-                                class="bg-slate-100 dark:bg-slate-800 text-xs text-red-500 dark:text-red-400 px-2 py-1 rounded font-mono">Java
-                                / C# / Kafka</span>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium">Role: Software Developer</p>
-                        <p class="text-slate-500 text-xs font-mono mt-1 mb-4">Nov 2019 - May 2021</p>
-                        <p class="text-slate-600 dark:text-slate-400 mb-4 flex-grow">Developed backend components and
-                            Oracle CC&B-based Java web service pipelines for customer invoicing and payment processing.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 relative bg-slate-50 dark:bg-slate-800/50">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-8">Let's Connect</h2>
-            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-12 leading-relaxed">
-                I'm always open to discussing complex data engineering challenges, cloud architecture, or opportunities
-                in Berlin (and beyond).
-            </p>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="https://www.linkedin.com/in/yunus-alper-korukcu/" target="_blank"
-                    class="w-full sm:w-auto px-10 py-4 border border-transparent text-lg font-medium rounded-md text-slate-900 bg-emerald-400 hover:bg-emerald-500 transition-all transform hover:-translate-y-1 shadow-lg flex items-center justify-center">
-                    <i class="fab fa-linkedin mr-3"></i> Connect on LinkedIn
-                </a>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=alperkorukcu@gmail.com" target="_blank"
-                    rel="noopener noreferrer"
-                    class="w-full sm:w-auto px-10 py-4 border border-slate-300 dark:border-slate-700 text-lg font-medium rounded-md text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center justify-center">
-                    <i class="fas fa-envelope mr-3"></i> Email Me
-                </a>
-            </div>
-
-            <div class="mt-20 flex justify-center space-x-10">
-                <a href="https://www.linkedin.com/in/yunus-alper-korukcu/" target="_blank"
-                    class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
-                    aria-label="LinkedIn">
-                    <i class="fab fa-linkedin text-3xl"></i>
-                </a>
-                <a href="https://alper-korukcu.medium.com/" target="_blank"
-                    class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
-                    aria-label="Medium">
-                    <i class="fab fa-medium text-3xl"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-8 border-t border-slate-200 dark:border-slate-800 text-center text-slate-500 text-sm">
-        <p>&copy; 2025 Yunus Alper Körükcü. Built with clean code and caffeine in Berlin.</p>
-    </footer>
-
-    <!-- Go to Top Button -->
-    <a href="#home" id="scrollTopBtn"
-        class="hidden fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-emerald-500 hover:bg-emerald-600 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition-opacity duration-300 z-50">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-
-    <script>
-        // --- Theme Toggle Logic ---
-
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeToggleIcon = document.getElementById('theme-toggle-icon');
-        const themeToggleMobileBtn = document.getElementById('theme-toggle-mobile');
-        const themeToggleMobileIcon = document.getElementById('theme-toggle-icon-mobile');
-        const htmlEl = document.documentElement;
-
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                htmlEl.classList.add('dark');
-                if (themeToggleIcon) themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
-                if (themeToggleMobileIcon) themeToggleMobileIcon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                htmlEl.classList.remove('dark');
-                if (themeToggleIcon) themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
-                if (themeToggleMobileIcon) themeToggleMobileIcon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Check initial theme on load
-        const initialTheme = localStorage.getItem('theme') ||
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        setTheme(initialTheme);
-
-        function toggleTheme() {
-            const currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
-        }
-
-        if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
-        if (themeToggleMobileBtn) themeToggleMobileBtn.addEventListener('click', toggleTheme);
-
-
-        // --- Original Page Scripts ---
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                // Close mobile menu on click
-                var menu = document.getElementById('mobile-menu');
-                if (!menu.classList.contains('hidden')) {
-                    menu.classList.add('hidden');
-                }
-
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Mobile menu toggle
-        /* This was redundant and fighting with the inline onclick, so it's removed.
-        document.querySelector('button[onclick*="mobile-menu"]').addEventListener('click', function() {
-             var menu = document.getElementById('mobile-menu');
-             menu.classList.toggle('hidden');
-        });
-        */
-
-        // --- Go to Top Button Logic ---
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                scrollTopBtn.classList.remove('hidden');
-            } else {
-                scrollTopBtn.classList.add('hidden');
-            }
-        });
-
-    </script>
+</main>
+</div>
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script src="js/MotionPathPlugin.min.js"></script>
+<script src="js/motion.js"></script>
+<script>(function(){var h=document.documentElement;if(window.AKMotion&&window.gsap){window.AKMotion.mount(document,{host:'site'});}else{h.classList.remove('ak-fx');}})();</script>
 </body>
-
-
 </html>
-
