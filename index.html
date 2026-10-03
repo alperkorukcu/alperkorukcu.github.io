@@ -31,7 +31,11 @@
 @font-face{font-family:"AK Display";src:url("assets/fonts/anybody-var.woff2") format("woff2");font-weight:100 900;font-stretch:50% 150%;font-style:normal;font-display:swap}
 @font-face{font-family:"AK Sans";src:url("assets/fonts/instrument-sans-var.woff2") format("woff2");font-weight:400 700;font-stretch:75% 100%;font-style:normal;font-display:swap}
 @font-face{font-family:"AK Mono";src:url("assets/fonts/jetbrains-mono-var.woff2") format("woff2");font-weight:100 800;font-style:normal;font-display:swap}
-:root{--ink:#07080a;--ink-2:#0d0f13;--ink-3:#151820;--paper:#eceae4;--paper-2:#c3c1bb;--mute:#8e929b;--dim:#5a5f68;--line:rgba(236,234,228,.12);--line-2:rgba(236,234,228,.24);--acid:#d4ff3f;--acid-ink:#0b0d02;--warm:#ff4d6d;--cool:#39d8ff;--fd:"AK Display","Arial Black",system-ui,sans-serif;--fb:"AK Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--fm:"AK Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--g:clamp(16px,4vw,56px);--eo:cubic-bezier(.16,1,.3,1)}
+@font-face{font-family:"AK Sans";src:url("assets/fonts/instrument-sans-tr.woff2") format("woff2");font-weight:400 700;font-stretch:75% 100%;font-style:normal;font-display:swap;unicode-range:U+011E-011F,U+0130,U+015E-015F}
+@font-face{font-family:"AK Mono";src:url("assets/fonts/jetbrains-mono-tr.woff2") format("woff2");font-weight:100 800;font-style:normal;font-display:swap;unicode-range:U+011E-011F,U+0130,U+015E-015F}
+@font-face{font-family:"AK Serif";src:url("assets/fonts/marcellus.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"AK Serif";src:url("assets/fonts/marcellus-tr.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+011E-011F,U+0130,U+015E-015F}
+:root{--acid-hi:#e6ff86;--fs:"AK Serif",Georgia,"Times New Roman",serif;--ink:#07080a;--ink-2:#0d0f13;--ink-3:#151820;--paper:#eceae4;--paper-2:#c3c1bb;--mute:#8e929b;--dim:#5a5f68;--line:rgba(236,234,228,.12);--line-2:rgba(236,234,228,.24);--acid:#d4ff3f;--acid-ink:#0b0d02;--warm:#ff4d6d;--cool:#39d8ff;--fd:"AK Display","Arial Black",system-ui,sans-serif;--fb:"AK Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--fm:"AK Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--g:clamp(16px,4vw,56px);--eo:cubic-bezier(.16,1,.3,1)}
 html,body{height:auto!important;min-height:100%}
 #dc-root,#dc-root>.sc-host{height:auto!important}
 html{background:#07080a;-webkit-text-size-adjust:100%}
@@ -43,7 +47,8 @@ a:hover{color:var(--acid)}
 img{max-width:100%;display:block}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--acid);outline-offset:3px}
-.ak{position:relative;overflow-x:clip;min-height:100vh;background:var(--ink)}
+.ak{position:relative;overflow-x:clip;min-height:100vh;background:var(--ink);transition:--acid .5s ease,--acid-hi .5s ease}
+.ak.is-ww{--acid:#ff8a2b;--acid-hi:#ffb169;--acid-ink:#180a00}
 .wrap{width:100%;max-width:1440px;margin-inline:auto;padding-inline:var(--g)}
 .mono{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;line-height:1.5}
 .ic{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -60,13 +65,13 @@ button{font:inherit;color:inherit}
 .hud{position:fixed;top:0;left:0;right:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px var(--g);pointer-events:none}
 .hud>*{pointer-events:auto}
 .hud-logo{display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-weight:700;font-size:13px;letter-spacing:.16em;color:var(--paper)}
-.hud-mark{display:inline-block;width:10px;height:10px;background:var(--acid);box-shadow:0 0 18px rgba(212,255,63,.6)}
+.hud-mark{display:inline-block;width:10px;height:10px;background:var(--acid);box-shadow:0 0 18px var(--acid)}
 .hud-nav{display:flex;align-items:center;gap:4px;padding:5px;border:1px solid var(--line);border-radius:999px;background:rgba(7,8,10,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .hud-nav a{position:relative;font-family:var(--fm);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;border-radius:999px;color:var(--paper-2);transition:color .25s}
 .hud-nav a:hover,.hud-nav a.is-on{color:var(--paper)}
 .hud-nav a.is-on::before{content:"";position:absolute;left:5px;top:50%;width:4px;height:4px;margin-top:-2px;background:var(--acid)}
 .hud-nav a.hud-cta{background:var(--acid);color:var(--acid-ink)}
-.hud-nav a.hud-cta:hover{background:#e6ff86;color:var(--acid-ink)}
+.hud-nav a.hud-cta:hover{background:var(--acid-hi);color:var(--acid-ink)}
 .hud-nav a.hud-cta.is-on::before{display:none}
 .prog{position:fixed;left:0;top:0;width:100%;height:2px;z-index:85;transform-origin:0 50%;transform:scaleX(0);background:var(--acid);pointer-events:none}
 .meter,.clock{position:fixed;bottom:14px;z-index:80;display:flex;gap:10px;align-items:center;padding:6px 12px;border-radius:999px;background:rgba(7,8,10,.74);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--mute);pointer-events:none;font-size:11px}
@@ -148,7 +153,7 @@ button{font:inherit;color:inherit}
 .btn:hover{border-color:var(--acid);color:var(--acid)}
 .btn svg{width:15px;height:15px}
 .btn--solid{background:var(--acid);border-color:var(--acid);color:var(--acid-ink)}
-.btn--solid:hover{background:#e6ff86;border-color:#e6ff86;color:var(--acid-ink)}
+.btn--solid:hover{background:var(--acid-hi);border-color:var(--acid-hi);color:var(--acid-ink)}
 .hero-scroll{position:absolute;right:var(--g);bottom:52px;display:flex;align-items:center;gap:12px;color:var(--mute)}
 .hero-scroll i{display:block;width:1px;height:46px;background:linear-gradient(var(--acid),transparent)}
 
@@ -344,6 +349,100 @@ button{font:inherit;color:inherit}
 .like .mono{grid-row:span 2;color:var(--acid);padding-top:6px}
 .like h3{margin:0;font-family:var(--fd);font-weight:700;font-stretch:106%;font-size:26px;line-height:1.1}
 .like p{margin:0;color:var(--paper-2);font-size:16px}
+.also{margin:clamp(72px,12vh,140px) 0 clamp(18px,3vh,30px);color:var(--mute)}
+
+/* The Waking Worlds: the book has its own world, kept apart from the work */
+.ww-lede{max-width:780px}
+.ww{--em:#ff8a2b;--fl:#ffc85a;--sv:#d7dce4;--tx:#f3ece2;--tx2:#b4ada2;--sp:#05070f;--mob:0;--bh:clamp(300px,62vh,600px);--bw:calc(var(--bh)*.6709);--bt:calc(var(--bh)*.1112);--bi:calc(var(--bh)*.012);--pt:calc(var(--bt) - 8px);position:relative;margin-top:clamp(40px,7vh,84px);background:var(--ink);color:var(--tx);font-family:var(--fs)}
+.ww ::selection{background:var(--em);color:#180a00}
+.ww-pin{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,6vw,96px);align-items:start;padding:clamp(56px,9vh,110px) var(--g);overflow:hidden;background:radial-gradient(70% 55% at 74% 30%,#17203f 0%,rgba(23,32,63,0) 70%),radial-gradient(50% 45% at 12% 85%,#2a1320 0%,rgba(42,19,32,0) 70%),var(--sp)}
+.ww-neb,.ww-emb,.ww-shade,.ww-shade2,.ww-bookwrap,.ww-chap,.ww-hint{display:none}
+.ww-cover{order:2;width:min(100%,400px);height:auto;justify-self:center;border-radius:3px;box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 0 1px rgba(215,220,228,.08)}
+.ww-left{display:flex;flex-direction:column;gap:clamp(24px,3.6vh,38px);max-width:640px}
+.ww-kick{margin:0 0 14px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--em)}
+.ww-title{margin:0;font-family:var(--fs);font-weight:400;font-size:clamp(40px,min(6.6vw,11.6vh),108px);line-height:.98;letter-spacing:.035em;text-transform:uppercase;color:var(--tx)}
+.wt-the{display:block;margin:0 0 .16em .08em;font-size:.44em;letter-spacing:.32em;color:var(--sv)}
+.wt-l{display:block;white-space:nowrap}
+.wl{display:inline-block;transform-origin:50% 60%}
+.wl.cap{font-size:1.2em;line-height:.8}
+.ww-by{margin:18px 0 0;font-size:clamp(17px,1.5vw,22px);letter-spacing:.04em}
+.ww-by span{margin:0 .2em;color:var(--em)}
+.ww-tag{margin:8px 0 0;font-size:clamp(16px,1.35vw,20px);color:var(--fl)}
+.ww-grp p{margin:0;font-size:clamp(19px,min(2vw,3.4vh),29px);line-height:1.32}
+.ww-grp p+p{margin-top:.7em}
+.ww-grp b{font-weight:400;color:var(--fl)}
+.ww-lk{margin:0 0 12px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--em)}
+.ww-lines{list-style:none;margin:0;padding:0;display:grid;gap:.7em}
+.ww-lines li{font-size:clamp(20px,min(2.5vw,4.2vh),38px);line-height:1.24}
+.ww-fmts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:540px}
+.ww-fmts li{display:flex}
+.ww-fmts .ww-fmt{flex:1 1 auto;min-width:0}
+.ww-fmt{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;min-height:76px;padding:14px 14px 12px;border:1px solid rgba(255,138,43,.55);border-radius:10px;background:rgba(20,12,9,.78);color:var(--tx);font-family:var(--fb)}
+.ww-fmt:hover{color:#180a00;background:var(--em);border-color:var(--em)}
+.ww-fmt-n{padding-right:16px;font-family:var(--fs);font-size:clamp(15px,1.45vw,21px);line-height:1.12}
+.ww-fmt-s{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--tx2)}
+.ww-fmt:hover .ww-fmt-s{color:#4a2400}
+.ww-fmt svg{position:absolute;right:10px;top:10px;width:14px;height:14px}
+.ww-facts{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:5px;font-family:var(--fb);font-size:14px;line-height:1.45;color:var(--tx2)}
+.ww-facts li{position:relative;padding-left:18px;transform-origin:0 50%}
+.ww-facts li::before{content:"";position:absolute;left:2px;top:.5em;width:6px;height:6px;background:var(--em);transform:rotate(45deg)}
+.ww-zoom,.ww-pan{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.ww-pan{left:0;top:0}
+.bk-aura{position:absolute;left:calc(var(--bw)*-1.15);top:calc(var(--bh)*-.85);width:calc(var(--bw)*2.3);height:calc(var(--bh)*1.7);border-radius:50%;background:radial-gradient(closest-side,rgba(255,138,43,.55),rgba(255,138,43,.14) 55%,rgba(255,138,43,0) 100%);opacity:0;pointer-events:none;transform:translateZ(-420px) scale(1.25)}
+.ww-book{position:absolute;left:calc(var(--bw)/-2);top:calc(var(--bh)/-2);width:var(--bw);height:var(--bh);transform-style:preserve-3d;pointer-events:auto;touch-action:pan-y;cursor:grab}
+.ww-book.is-grab{cursor:grabbing}
+.bk-shell,.bk-lid,.bk-sheets{position:absolute;inset:0;transform-style:preserve-3d}
+.bk-sheets{pointer-events:none}
+.bk-face{position:absolute;inset:0;overflow:hidden;border-radius:2px;background:#0a0c14;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.bk-face img{display:block;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;-webkit-user-select:none;user-select:none}
+.bk-back{transform:rotateY(180deg) translateZ(calc(var(--bt)/2))}
+.bk-in2{transform:translateZ(calc(var(--bt)/-2 + 1px));background:#15121c}
+.bk-spine{left:calc(var(--bt)/-2);right:auto;width:var(--bt);border-radius:0;transform:rotateY(-90deg)}
+.bk-spine::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 28%,rgba(255,255,255,.07) 50%,rgba(0,0,0,0) 72%,rgba(0,0,0,.5))}
+.bk-edge{position:absolute;background-color:#e6ddc8;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.bk-edge-r{top:var(--bi);bottom:var(--bi);left:calc(100% - var(--bi) - var(--pt)/2);width:var(--pt);transform:rotateY(90deg);background-image:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 74%,rgba(0,0,0,.38)),repeating-linear-gradient(90deg,rgba(90,74,48,0) 0,rgba(90,74,48,0) 1px,rgba(90,74,48,.3) 1px,rgba(90,74,48,.3) 2px)}
+.bk-edge-t,.bk-edge-b{left:1px;right:var(--bi);height:var(--pt);background-image:linear-gradient(0deg,rgba(0,0,0,.38),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 74%,rgba(0,0,0,.38)),repeating-linear-gradient(0deg,rgba(90,74,48,0) 0,rgba(90,74,48,0) 1px,rgba(90,74,48,.3) 1px,rgba(90,74,48,.3) 2px)}
+.bk-edge-t{top:calc(var(--bi) - var(--pt)/2);transform:rotateX(90deg)}
+.bk-edge-b{bottom:calc(var(--bi) - var(--pt)/2);transform:rotateX(-90deg)}
+.bk-page{--mo:0;position:absolute;left:2px;right:var(--bi);top:var(--bi);bottom:var(--bi);overflow:hidden;pointer-events:none;border-radius:calc(14px - 12px*var(--mo));background:#10131e;background:color-mix(in srgb,#10131e,#efe7d6 calc(var(--mo)*100%));box-shadow:0 0 0 1px rgba(215,220,228,calc(.22 - .22*var(--mo))),0 30px 80px -30px rgba(0,0,0,.85);transform:translateZ(calc(var(--pt)/2)) scale(calc(1.06 - .06*var(--mo)))}
+.pg-chat{position:absolute;left:0;right:0;top:0;padding:6% 7% 0;opacity:calc(1 - var(--mo)*2.6)}
+.pg-top{display:flex;align-items:center;font-family:var(--fb);font-size:calc(var(--bh)*.024);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2)}
+.pg-av{display:grid;place-items:center;width:calc(var(--bh)*.052);height:calc(var(--bh)*.052);border-radius:50%;font-size:calc(var(--bh)*.024);font-weight:700;letter-spacing:0;color:#0a0c14;background:var(--sv);box-shadow:0 0 0 2px #10131e}
+.pg-a{margin-left:calc(var(--bh)*-.012);background:var(--em)}
+.pg-mem{margin-left:calc(var(--bh)*.018)}
+.pg-net{display:block;width:100%;height:auto;margin-top:5%;overflow:visible}
+.nt-l{stroke:rgba(215,220,228,.4);stroke-width:1;fill:none}
+.nt-hub{stroke:rgba(215,220,228,.65);stroke-width:1.5}
+.nt-la{stroke:var(--em)}
+.nt-n{fill:var(--c,#8fb2ff)}
+.nt-na{fill:var(--em)}
+.nt-h{fill:#0f1320;stroke:var(--sv);stroke-width:1.5}
+.nt-ha{stroke:var(--em)}
+.nt-t{font-family:var(--fb);font-size:13px;font-weight:700;fill:var(--tx);text-anchor:middle}
+.pg-feed{position:absolute;left:7%;right:7%;top:43%;bottom:5%;overflow:hidden;opacity:calc(3.6 - var(--mo)*4);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,#000 12%,#000 90%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,#000 12%,#000 90%,rgba(0,0,0,0) 100%)}
+.pg-roll{position:absolute;left:0;right:0;top:0;padding-top:calc(var(--bh)*.03)}
+.pb{display:block;width:var(--w);height:calc(var(--bh)*.03);margin-bottom:calc(var(--bh)*.026);border-radius:99px;background:var(--c,#ff8a2b);background:color-mix(in srgb,var(--c,#ff8a2b),#4a4034 calc(var(--mo)*100%));transform-origin:0 50%;transform:scale(calc(1 + (var(--x) - 1)*var(--mo)),calc(1 - .8*var(--mo)))}
+.pb.r{margin-left:auto;transform-origin:100% 50%}
+.pg-ink,.bk-sheets i{--row:calc(var(--bh)*.026);--pap:#efe7d6}
+.pg-ink{position:absolute;inset:0;padding:15% 10% 9%;opacity:calc(var(--mo)*2.6 - 1.6);background:linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*4.2)/46% calc(var(--row)*.86) no-repeat content-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*11.2)/64% calc(var(--row)*.86) no-repeat content-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*17.2)/28% calc(var(--row)*.86) no-repeat content-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*24.2)/55% calc(var(--row)*.86) no-repeat content-box,repeating-linear-gradient(to bottom,rgba(74,64,52,0) 0,rgba(74,64,52,0) calc(var(--row)*.8),rgba(74,64,52,.6) calc(var(--row)*.8),rgba(74,64,52,.6) var(--row)) content-box}
+.pg-h{position:absolute;left:0;right:0;top:6.5%;text-align:center;font-family:var(--fs);font-size:calc(var(--bh)*.034);letter-spacing:.22em;text-transform:uppercase;color:#4a4034}
+.bk-sheets i{position:absolute;left:2px;right:var(--bi);top:var(--bi);bottom:var(--bi);padding:15% 10% 9%;opacity:0;transform-origin:0 50%;transform:translateZ(calc(var(--pt)/2 + var(--k)*.4px)) rotateY(var(--a,-128deg));background:linear-gradient(90deg,rgba(40,30,14,.3),rgba(40,30,14,0) 14%) border-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*7.2)/52% calc(var(--row)*.86) no-repeat content-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*15.2)/34% calc(var(--row)*.86) no-repeat content-box,linear-gradient(var(--pap),var(--pap)) right calc(var(--row)*22.2)/60% calc(var(--row)*.86) no-repeat content-box,repeating-linear-gradient(to bottom,rgba(74,64,52,0) 0,rgba(74,64,52,0) calc(var(--row)*.8),rgba(74,64,52,.5) calc(var(--row)*.8),rgba(74,64,52,.5) var(--row)) content-box,var(--pap)}
+.bk-lid{transform-origin:0 50%;transform:translateZ(calc(var(--bt)/2)) rotateY(var(--lid,0deg))}
+.bk-front img,.bk-gl{position:absolute;left:0;top:0;width:100%;height:100%}
+.bk-front img,.bk-back img,.bk-spine img{filter:grayscale(calc(1 - var(--wk,1))) brightness(calc(.45 + .55*var(--wk,1)))}
+.bk-gl{display:block;opacity:0;pointer-events:none}
+.bk-front.is-gl .bk-gl{opacity:1}
+.bk-front.is-gl img{visibility:hidden}
+.bk-front::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.42) 0,rgba(0,0,0,0) 3%,rgba(255,255,255,.08) 4.2%,rgba(0,0,0,0) 6.5%)}
+.bk-sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:linear-gradient(105deg,rgba(255,255,255,0) 32%,rgba(255,255,255,.16) 47%,rgba(255,255,255,0) 62%);background-size:260% 100%;background-position:var(--sx,50%) 0}
+.bk-orb{position:absolute;left:63.5%;top:82.5%;width:0;height:0}
+.bk-inner{transform:rotateY(180deg) translateZ(1px);background:linear-gradient(100deg,#231b2c,#120f1a)}
+.bk-inner::after{content:"";position:absolute;inset:6%;border:1px solid rgba(255,200,90,.22)}
+.ww-chap{font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--tx2)}
+.ww-ch b{display:inline-block;min-width:2.4em;font-weight:700;color:var(--em)}
+.ww-hint{margin:0;font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--tx2)}
+.meter,.clock{transition:opacity .4s}
+.ak.is-ww .meter,.ak.is-ww .clock{opacity:0!important}
 
 /* Contact */
 .contact{padding-bottom:72px}
@@ -358,7 +457,7 @@ button{font:inherit;color:inherit}
 .avail li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acid)}
 .reach{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .mail{display:inline-flex;align-items:center;gap:16px;max-width:100%;padding:18px 28px;border-radius:999px;background:var(--acid);color:var(--acid-ink);font-family:var(--fd);font-weight:700;font-stretch:100%;font-size:clamp(19px,2.3vw,34px);letter-spacing:-.01em;line-height:1.1}
-.mail:hover{color:var(--acid-ink);background:#e6ff86}
+.mail:hover{color:var(--acid-ink);background:var(--acid-hi)}
 .mail svg{width:26px;height:26px;flex:none}
 .links{display:flex;flex-wrap:wrap;gap:10px}
 .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:clamp(72px,13vh,150px);padding-top:22px;border-top:1px solid var(--line);color:var(--mute)}
@@ -384,6 +483,26 @@ button{font:inherit;color:inherit}
 .flight-hud b{font-family:var(--fd);font-weight:800;font-size:clamp(40px,5vw,72px);line-height:1;letter-spacing:-.03em;color:var(--paper)}
 .flight-bar{position:relative;flex:1;max-width:420px;height:2px;margin-bottom:14px;background:var(--line)}
 .flight-bar i{position:absolute;inset:0;background:var(--acid);transform-origin:0 50%;transform:scaleX(0)}
+.ww.is-fx .ww-track{height:665vh}
+.ww.is-fx .ww-pin{position:sticky;top:0;display:block;height:100vh;height:100svh;padding:0;background:var(--ink)}
+.ww.is-fx .ww-neb,.ww.is-fx .ww-emb{display:block;position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.ww.is-fx .ww-neb{background:radial-gradient(70% 55% at 74% 30%,#17203f 0%,rgba(23,32,63,0) 70%),radial-gradient(50% 45% at 12% 85%,#2a1320 0%,rgba(42,19,32,0) 70%),var(--sp)}
+.ww.is-fx .ww-shade{display:block;position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,rgba(7,8,10,0) 80%,var(--ink) 100%),radial-gradient(120% 95% at 50% 50%,rgba(3,4,9,0) 58%,rgba(3,4,9,.66) 100%)}
+.ww.is-fx .ww-bookwrap{display:block;position:absolute;inset:0;z-index:2;perspective:1700px;pointer-events:none;-webkit-user-select:none;user-select:none}
+.ww.is-fx .ww-emb{z-index:3}
+.ww.is-fx .ww-shade2{display:block;position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.5;background:linear-gradient(90deg,rgba(4,5,11,.96) 0%,rgba(4,5,11,.9) 34%,rgba(4,5,11,.55) 50%,rgba(4,5,11,0) 72%)}
+.ww.is-fx .ww-left{display:block;position:absolute;z-index:5;left:var(--g);top:0;bottom:0;width:min(44vw,620px);max-width:none;pointer-events:none}
+.ww.is-fx .ww-pn{position:absolute;left:0;right:0;top:50%;opacity:0;pointer-events:none;will-change:transform,opacity}
+.ww.is-fx .ww-grp-b{max-width:430px}
+.ww.is-fx .ww-lines{display:block}
+.ww.is-fx .ww-lines li::before{content:"From the back cover";display:block;margin:0 0 14px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:.24em;line-height:1.4;text-transform:uppercase;color:var(--em)}
+.ww.is-fx .ww-lk{display:none}
+.ww.is-fx .ww-fmts{perspective:900px}
+.ww.is-fx .ww-fmt{will-change:transform}
+.ww.is-fx .ww-chap{display:block;position:absolute;z-index:6;left:var(--g);top:92px;height:16px;pointer-events:none}
+.ww.is-fx .ww-ch{position:absolute;left:0;top:0;white-space:nowrap;opacity:0;transform-origin:0 50%}
+.ww.is-fx .ww-hint{display:block;position:absolute;z-index:6;right:var(--g);bottom:26px;opacity:0;pointer-events:none}
+.ww.is-fx .ww-cover{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;box-shadow:none}
 
 /* Responsive */
 @media (max-width:1100px){
@@ -430,8 +549,37 @@ body{font-size:16px}
 .mail{padding:16px 22px}
 .cert-meta{flex-direction:column;align-items:flex-start}
 }
+@media (max-height:700px){
+.ww.is-fx .ww-chap{display:none}
+}
+@media (max-width:900px){
+.ww-pin{grid-template-columns:1fr}
+.ww-cover{order:-1;width:min(64%,300px)}
+}
+@media (max-width:900px) and (min-height:560px){
+.ww{--mob:1;--bh:clamp(220px,38vh,360px)}
+.ww.is-fx .ww-left{left:var(--g);right:var(--g);width:auto;top:53%;bottom:14px}
+.ww.is-fx .ww-pn{top:0}
+.ww.is-fx .ww-grp-b{max-width:none}
+.ww.is-fx .ww-lines li{top:auto;bottom:0}
+.ww.is-fx .ww-shade2{background:linear-gradient(0deg,rgba(4,5,11,.97) 0%,rgba(4,5,11,.9) 38%,rgba(4,5,11,0) 66%)}
+.ww.is-fx .ww-chap{top:70px}
+.ww.is-fx .ww-hint{left:0;right:0;top:calc(53% - 24px);bottom:auto;text-align:center}
+.ww-title{font-size:8.6vw}
+.wt-the{margin-bottom:.3em}
+.wt-l{display:inline-block;margin-right:.28em}
+.ww-by{margin-top:12px}
+.ww-fmt{min-height:62px;padding:10px 10px 9px}
+.ww-facts{margin-top:12px;font-size:13px}
+}
+@supports (height:100svh){
+@media (max-width:900px) and (min-height:560px){
+.ww{--bh:clamp(220px,38svh,360px)}
+}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Yunus Alper Körükcü", "jobTitle": "Senior Data Engineer", "url": "https://alperkorukcu.github.io/", "image": "https://alperkorukcu.github.io/assets/img/alper-portrait.jpg", "email": "mailto:alperkorukcu@gmail.com", "address": {"@type": "PostalAddress", "addressLocality": "Berlin", "addressCountry": "DE"}, "alumniOf": {"@type": "CollegeOrUniversity", "name": "Karabük University"}, "hasCredential": {"@type": "EducationalOccupationalCredential", "name": "Google Cloud Certified Professional Data Engineer"}, "knowsAbout": ["Apache Kafka", "Spark Structured Streaming", "Apache Spark", "Oracle GoldenGate", "Apache Airflow", "BigQuery", "Apache Impala", "Apache Hive", "HBase", "PostgreSQL", "SQL", "Python", "Data modeling"], "sameAs": ["https://www.linkedin.com/in/yunus-alper-korukcu/", "https://alper-korukcu.medium.com/", "https://github.com/alperkorukcu"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Book", "name": "The Waking Worlds, Episode One", "author": [{"@type": "Person", "name": "Yunus Alper Körükcü", "url": "https://alperkorukcu.github.io/"}, {"@type": "Person", "name": "Fırat Keleş"}], "genre": ["Science fiction", "Fantasy"], "inLanguage": "en", "image": "https://alperkorukcu.github.io/assets/img/ww-front.webp", "workExample": [{"@type": "Book", "bookFormat": "https://schema.org/EBook", "url": "https://www.amazon.de/dp/B0HLT3CZ99"}, {"@type": "Book", "bookFormat": "https://schema.org/Paperback", "url": "https://www.amazon.de/dp/B0HLSNVBLF"}, {"@type": "Book", "bookFormat": "https://schema.org/Hardcover", "url": "https://www.amazon.de/dp/B0HLVRRJGW"}]}</script>
 </head>
 <body>
 <div class="ak" id="top">
@@ -463,6 +611,7 @@ body{font-size:16px}
 <a href="#lineage" data-nav="lineage">Experience</a>
 <a href="#schema" data-nav="schema" class="hide-s">Stack</a>
 <a href="#writing" data-nav="writing" class="hide-s">Writing</a>
+<a href="#book" data-nav="book" class="hide-s">Book</a>
 <a href="#contact" data-nav="contact" class="hud-cta">Contact</a>
 </nav>
 </header>
@@ -766,12 +915,151 @@ body{font-size:16px}
 <div class="wrap">
 <div class="sec-head mono"><span class="sec-no" data-scr="">08</span><span class="sec-stage" data-scr="">Offline</span><span class="sec-rule"></span><span>Beyond the data</span></div>
 <h2 class="sec-title" id="beyondT"><span class="mask"><span class="mask-i">Off the clock</span></span></h2>
+<p class="lede rv ww-lede">Outside of work, I write. I am the co-creator and co-author of The Waking Worlds, a science fiction and fantasy series that began as a years-long Dungeons &amp; Dragons style roleplay with my friend Fırat Keleş.</p>
+</div>
+
+<article class="ww" id="book" aria-labelledby="wwT">
+<div class="ww-track">
+<div class="ww-pin">
+<canvas class="ww-neb" aria-hidden="true"></canvas>
+<div class="ww-shade" aria-hidden="true"></div>
+<img class="ww-cover" src="assets/img/ww-front.webp" alt="Cover of The Waking Worlds, Episode One. Four characters stand in front of a nebula and a planet, and one of them holds a ball of fire." width="1536" height="2290" loading="lazy" decoding="async">
+
+<div class="ww-bookwrap" aria-hidden="true">
+<div class="ww-zoom">
+<div class="ww-pan">
+<div class="bk-aura"></div>
+<div class="ww-book" data-cursor="Drag">
+<div class="bk-shell">
+<div class="bk-face bk-back"><img src="assets/img/ww-back.webp" alt="" draggable="false" decoding="async"></div>
+<div class="bk-face bk-in2"></div>
+<div class="bk-face bk-spine"><img src="assets/img/ww-spine.webp" alt="" draggable="false" decoding="async"></div>
+<div class="bk-edge bk-edge-r"></div>
+<div class="bk-edge bk-edge-t"></div>
+<div class="bk-edge bk-edge-b"></div>
+</div>
+<div class="bk-page">
+<div class="pg-chat">
+<div class="pg-top"><span class="pg-av">F</span><span class="pg-av pg-a">A</span><span class="pg-mem">2 members</span></div>
+<svg class="pg-net" viewBox="0 0 320 150">
+<line class="nt-l nt-hub" x1="104" y1="78" x2="262" y2="78"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="90.5" y2="26.8"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="143" y2="33"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="177.3" y2="60.2"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="177.3" y2="95.8"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="143" y2="123"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="90.5" y2="129.2"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="44.3" y2="111.4"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="26" y2="78"></line>
+<line class="nt-l nt-lf" x1="104" y1="78" x2="44.3" y2="44.6"></line>
+<line class="nt-l nt-lf nt-la" x1="262" y1="78" x2="262" y2="26"></line>
+<circle class="nt-n" cx="90.5" cy="26.8" r="6" style="--c: #8fb2ff"></circle>
+<circle class="nt-n" cx="143" cy="33" r="6" style="--c: #b79cff"></circle>
+<circle class="nt-n" cx="177.3" cy="60.2" r="6" style="--c: #6fd6c4"></circle>
+<circle class="nt-n" cx="177.3" cy="95.8" r="6" style="--c: #ff9fb5"></circle>
+<circle class="nt-n" cx="143" cy="123" r="6" style="--c: #e6d28a"></circle>
+<circle class="nt-n" cx="90.5" cy="129.2" r="6" style="--c: #8fb2ff"></circle>
+<circle class="nt-n" cx="44.3" cy="111.4" r="6" style="--c: #b79cff"></circle>
+<circle class="nt-n" cx="26" cy="78" r="6" style="--c: #6fd6c4"></circle>
+<circle class="nt-n" cx="44.3" cy="44.6" r="6" style="--c: #ff9fb5"></circle>
+<circle class="nt-n nt-na" cx="262" cy="26" r="6"></circle>
+<circle class="nt-h" cx="104" cy="78" r="15"></circle>
+<circle class="nt-h nt-ha" cx="262" cy="78" r="15"></circle>
+<text class="nt-t" x="104" y="82.5">F</text>
+<text class="nt-t" x="262" y="82.5">A</text>
+</svg>
+</div>
+<div class="pg-feed">
+<div class="pg-roll">
+<i class="pb" style="--w: 62%; --x: 1.613; --c: #8fb2ff"></i>
+<i class="pb r" style="--w: 38%; --x: 2.632"></i>
+<i class="pb" style="--w: 74%; --x: 1.351; --c: #b79cff"></i>
+<i class="pb" style="--w: 46%; --x: 2.174; --c: #6fd6c4"></i>
+<i class="pb r" style="--w: 52%; --x: 1.923"></i>
+<i class="pb" style="--w: 68%; --x: 1.471; --c: #ff9fb5"></i>
+<i class="pb r" style="--w: 30%; --x: 3.333"></i>
+<i class="pb" style="--w: 80%; --x: 1.25; --c: #e6d28a"></i>
+<i class="pb" style="--w: 40%; --x: 2.5; --c: #8fb2ff"></i>
+<i class="pb r" style="--w: 58%; --x: 1.724"></i>
+<i class="pb" style="--w: 66%; --x: 1.515; --c: #b79cff"></i>
+<i class="pb" style="--w: 72%; --x: 1.389; --c: #6fd6c4"></i>
+<i class="pb r" style="--w: 44%; --x: 2.273"></i>
+<i class="pb" style="--w: 54%; --x: 1.852; --c: #ff9fb5"></i>
+<i class="pb r" style="--w: 36%; --x: 2.778"></i>
+<i class="pb" style="--w: 70%; --x: 1.429; --c: #e6d28a"></i>
+<i class="pb r" style="--w: 48%; --x: 2.083"></i>
+<i class="pb" style="--w: 60%; --x: 1.667; --c: #8fb2ff"></i>
+</div>
+</div>
+<div class="pg-ink"><span class="pg-h">Episode One</span></div>
+</div>
+<div class="bk-sheets"><i style="--k: 1"></i><i style="--k: 2"></i><i style="--k: 3"></i><i style="--k: 4"></i><i style="--k: 5"></i><i style="--k: 6"></i></div>
+<div class="bk-lid">
+<div class="bk-face bk-front"><img src="assets/img/ww-front.webp" alt="" draggable="false" decoding="async"><canvas class="bk-gl"></canvas><span class="bk-sheen"></span><span class="bk-orb"></span></div>
+<div class="bk-face bk-inner"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<canvas class="ww-emb" aria-hidden="true"></canvas>
+<div class="ww-shade2" aria-hidden="true"></div>
+
+<div class="ww-left">
+<div class="ww-pn ww-lock">
+<p class="ww-kick">Episode One · Out now</p>
+<h3 class="ww-title" id="wwT" aria-label="The Waking Worlds">
+<span class="wt-the" aria-hidden="true"><span class="wl">T</span><span class="wl">h</span><span class="wl">e</span></span>
+<span class="wt-l" aria-hidden="true"><span class="wl cap">W</span><span class="wl">a</span><span class="wl">k</span><span class="wl">i</span><span class="wl">n</span><span class="wl">g</span></span>
+<span class="wt-l" aria-hidden="true"><span class="wl cap">W</span><span class="wl">o</span><span class="wl">r</span><span class="wl">l</span><span class="wl">d</span><span class="wl">s</span></span>
+</h3>
+<p class="ww-by">Yunus Alper Körükcü <span>&amp;</span> Fırat Keleş</p>
+<p class="ww-tag">From the ashes we will rise.</p>
+</div>
+<div class="ww-pn ww-grp ww-grp-a">
+<p>For years, my friend <b>Fırat Keleş</b> and I ran a Discord server with exactly two members: us.</p>
+<p>It started as a roleplay in Turkish, Dungeons &amp; Dragons style. Fırat played every character who walked through the door. I played one.</p>
+<p>A normal session ran two hours. The ones that got away from us ran six.</p>
+</div>
+<div class="ww-pn ww-grp ww-grp-b">
+<p>When the last season ended, I said we should write it down.</p>
+<p>He agreed before I finished the sentence.</p>
+<p>Turning years of Turkish chat logs into an English novel was a long job.</p>
+</div>
+<div class="ww-blurb">
+<p class="ww-lk">From the back cover</p>
+<ol class="ww-lines">
+<li class="ww-pn">Trascott has taken work on more worlds than he can name. This one looked simple.</li>
+<li class="ww-pn">What comes down out of the branches has horns, blood still on her teeth, and a stone at her throat that is keeping her alive.</li>
+<li class="ww-pn">Under the sand beneath her feet lies a fleet that has not moved in three thousand years, and she is the only one left who can wake it.</li>
+<li class="ww-pn">The Waking Worlds is space opera. With something older running under it.</li>
+</ol>
+</div>
+<div class="ww-pn ww-buy">
+<ul class="ww-fmts">
+<li><a class="ww-fmt" href="https://www.amazon.de/dp/B0HLT3CZ99" target="_blank" rel="noopener" data-cursor="Amazon" aria-label="The Waking Worlds, Kindle eBook on Amazon"><span class="ww-fmt-n">Kindle eBook</span><span class="ww-fmt-s">Amazon</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="ww-fmt" href="https://www.amazon.de/dp/B0HLSNVBLF" target="_blank" rel="noopener" data-cursor="Amazon" aria-label="The Waking Worlds, paperback on Amazon"><span class="ww-fmt-n">Paperback</span><span class="ww-fmt-s">Amazon</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+<li><a class="ww-fmt" href="https://www.amazon.de/dp/B0HLVRRJGW" target="_blank" rel="noopener" data-cursor="Amazon" aria-label="The Waking Worlds, hardcover on Amazon"><span class="ww-fmt-n">Hardcover</span><span class="ww-fmt-s">Amazon</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></li>
+</ul>
+<ul class="ww-facts"><li>80 colour illustrations</li><li>First book of a series</li><li>For readers of The Expanse and The Name of the Wind</li></ul>
+</div>
+</div>
+
+<div class="ww-chap" aria-hidden="true"><span class="ww-ch"><b>I</b>Two members</span><span class="ww-ch"><b>II</b>Write it down</span><span class="ww-ch"><b>III</b>The book</span><span class="ww-ch"><b>IV</b>Inside the cover</span><span class="ww-ch"><b>V</b>Read it</span></div>
+<p class="ww-hint" aria-hidden="true"><span class="rd" data-v="Drag the book to turn it"></span></p>
+</div>
+</div>
+</article>
+
+<div class="wrap">
+<p class="also mono">Also off the clock</p>
 <div class="beyond">
 <div>
 <ul class="likes">
-<li class="like" data-like="0"><span class="mono">01</span><h3>Space and physics</h3><p>I write about the cosmos, from distant stars to the physics behind them.</p></li>
-<li class="like" data-like="1"><span class="mono">02</span><h3>Cars</h3><p>Following the latest in automotive tech and performance.</p></li>
-<li class="like" data-like="2"><span class="mono">03</span><h3>Dungeons &amp; Dragons</h3><p>Building worlds and running campaigns as a Dungeon Master.</p></li>
+<li class="like" data-like="0"><span class="mono">01</span><h3>Space exploration</h3><p>I enjoy reading about space exploration.</p></li>
+<li class="like" data-like="1"><span class="mono">02</span><h3>Cars</h3><p>A car enthusiast who follows automotive engineering closely.</p></li>
+<li class="like" data-like="2"><span class="mono">03</span><h3>Dungeons &amp; Dragons</h3><p>A campaign between two friends that has been running for years. It became The Waking Worlds.</p></li>
 </ul>
 </div>
 <div class="orbit" aria-hidden="true">

@@ -1,5 +1,5 @@
 /*!
- * AK Motion 1.0
+ * AK Motion 1.1
  * Motion system for the portfolio of Yunus Alper Körükcü.
  * Runtime: GSAP 3 (ScrollTrigger, MotionPathPlugin) plus raw WebGL and Canvas 2D.
  * Each module is named after the motion rule it adapts from the hyperframes
@@ -24,6 +24,18 @@
       out += (c === ' ' || c === '·' || c === '/' || c === '.') ? c : GLYPHS.charAt(Math.floor(hash(seed + i * 13.7) * GLYPHS.length));
     }
     return out;
+  }
+  function mkProgram(gl, vs, fs) {
+    function sh(type, src) {
+      var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || 'shader compile');
+      return s;
+    }
+    var p = gl.createProgram();
+    gl.attachShader(p, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'program link');
+    return p;
   }
 
   function mount(doc, opts) {
@@ -71,6 +83,7 @@
       cleanups.forEach(function (f) { try { f(); } catch (e) {} });
       cleanups.length = 0;
       html.classList.remove('ak-fx', 'ak-static', 'ak-cur', 'ak-cur-hide');
+      root.classList.remove('is-ww');
       html.style.overflow = '';
       root.__akMounted = false;
     }
@@ -104,7 +117,7 @@
     gsap.ticker.add(tick);
     cleanups.push(function () { gsap.ticker.remove(tick); });
 
-    var modules = [grain, cursor, fxLayer, magnets, hud, heroGL, hero, heads, about, portrait, dds, results, proofs, marquee, flight, stack, certs, writing, beyond, contact];
+    var modules = [grain, cursor, fxLayer, magnets, hud, heroGL, hero, heads, about, portrait, dds, results, proofs, marquee, flight, stack, certs, writing, book, beyond, contact];
     ctx.add(function () {
       modules.forEach(function (m) {
         try { m(W); } catch (err) { if (win.console) console.warn('[ak] module failed:', m.name, err); }
@@ -128,6 +141,7 @@
 
     return {
       destroy: function () {
+        W.dying = true;   // lets modules ignore the callbacks a revert fires on its way out
         try { ctx.revert(); } catch (e) {}
         teardown();
       }
@@ -241,15 +255,16 @@
     var dpr = Math.min(W.win.devicePixelRatio || 1, 2), items = [], dirty = false;
     function size() { cv.width = Math.round(W.win.innerWidth * dpr); cv.height = Math.round(W.win.innerHeight * dpr); }
     size(); W.on(W.win, 'resize', size);
-    var cols = ['#d4ff3f', '#eceae4', '#39d8ff', '#d4ff3f'];
-    W.ripple = function (x, y) { items.push({ k: 0, x: x, y: y, t: 0, life: 0.75 }); };
+    // The palette follows the world the pointer is in: acid for the work, ember inside the book.
+    var cols = ['#d4ff3f', '#eceae4', '#39d8ff', '#d4ff3f'], warm = ['#ff8a2b', '#f3ece2', '#ffc85a', '#ff8a2b'];
+    W.ripple = function (x, y) { items.push({ k: 0, x: x, y: y, t: 0, life: 0.75, c: W.theme === 'ember' ? warm[0] : cols[0] }); };
     W.burst = function (x, y, n) {
       n = n || 36;
-      var seed = x * 0.13 + y * 0.29;
+      var seed = x * 0.13 + y * 0.29, pal = W.theme === 'ember' ? warm : cols;
       for (var i = 0; i < n; i++) {
         var a = -Math.PI / 2 + (hash(seed + i * 5.1) * 2 - 1) * 1.3;
         var s = 360 + hash(seed + i * 7.3) * 640;
-        items.push({ k: 1, x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, t: 0, life: 1.1 + hash(seed + i * 3.3) * 0.7, sz: 4 + hash(seed + i * 9.1) * 8, spin: (hash(seed + i * 11.7) * 2 - 1) * 10, c: cols[i % cols.length] });
+        items.push({ k: 1, x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, t: 0, life: 1.1 + hash(seed + i * 3.3) * 0.7, sz: 4 + hash(seed + i * 9.1) * 8, spin: (hash(seed + i * 11.7) * 2 - 1) * 10, c: pal[i % pal.length] });
       }
     };
     W.loop(function (dt) {
@@ -262,7 +277,7 @@
         var k = it.t / it.life;
         if (k >= 1) { items.splice(i, 1); continue; }
         if (it.k === 0) {
-          g.globalAlpha = (1 - k) * 0.9; g.strokeStyle = '#d4ff3f'; g.lineWidth = 1.5;
+          g.globalAlpha = (1 - k) * 0.9; g.strokeStyle = it.c; g.lineWidth = 1.5;
           g.beginPath(); g.arc(it.x, it.y, 6 + (1 - Math.pow(1 - k, 3)) * 64, 0, 6.2832); g.stroke();
         } else {
           var t = it.t;
@@ -1211,6 +1226,737 @@
     });
   }
 
+  /* ---------- 08 OFFLINE · THE WAKING WORLDS ----------
+   * The book gets a world of its own, apart from the work. Rules adapted here, none of them
+   * used anywhere else on the page: theme-crossfade-morph, 3d-page-scroll, avatar-cloud-network,
+   * card-morph-anchor, physics-press-reaction, multi-phase-camera, asr-keyword-glow,
+   * coordinate-target-zoom, dynamic-content-sequencing, reactive-displacement,
+   * scale-swap-transition, cursor-drag, sine-wave-loop, center-outward-expansion,
+   * split-tilt-cards, spring-pop-entrance, nudge-curve.
+   * Outside the rule library: a real CSS 3D hardcover, two fragment shaders (nebula and a
+   * living cover) and a Canvas 2D ember field.
+   */
+  var QUAD_VS = 'attribute vec2 p;varying vec2 vUv;void main(){vUv=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}';
+  var GLSL_NOISE = [
+    '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+    'precision highp float;',
+    '#else',
+    'precision mediump float;',
+    '#endif',
+    'float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
+    'float vn(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}'
+  ].join('\n');
+  // FBM with domain warping. Cold and asleep until uWake, then an ember core blooms around the fire on the cover.
+  var NEB_FS = [
+    GLSL_NOISE,
+    'uniform vec2 uRes;', 'uniform float uT;', 'uniform float uWake;', 'uniform vec2 uOrb;',
+    'float fbm(vec2 p){float a=.5;float s=0.;for(int i=0;i<5;i++){s+=a*vn(p);p=p*2.03+vec2(11.7,5.3);a*=.5;}return s;}',
+    'void main(){',
+    '  vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;',
+    '  float t=uT*.025;',
+    '  vec2 q=vec2(fbm(p*1.5+vec2(0.,t)),fbm(p*1.5+vec2(5.2,1.3)-vec2(t*.7,0.)));',
+    '  vec2 r=vec2(fbm(p*1.5+3.2*q+vec2(1.7,9.2)+t*.5),fbm(p*1.5+3.2*q+vec2(8.3,2.8)-t*.35));',
+    '  float f=fbm(p*1.5+2.6*r);',
+    '  vec3 col=vec3(.012,.016,.040);',
+    '  col=mix(col,vec3(.045,.09,.24),smoothstep(.28,.82,f));',
+    '  col=mix(col,vec3(.19,.10,.31),smoothstep(.5,1.05,length(q))*.6);',
+    '  col+=vec3(.06,.11,.20)*r.y*r.y*r.y;',
+    '  vec2 o=(uOrb-.5)*vec2(uRes.x/uRes.y,1.);',
+    '  float d=length(p-o);',
+    '  float core=exp(-d*d*2.6);',
+    '  float cloud=smoothstep(.25,.9,f+.25*r.x);',
+    '  col+=vec3(1.,.40,.10)*uWake*cloud*(.10+.75*core);',
+    '  col+=vec3(1.,.72,.42)*uWake*core*core*.16;',
+    '  col=mix(col,col*vec3(1.12,.96,.9),uWake*.5);',
+    '  vec2 g=gl_FragCoord.xy/(uRes.y/170.);',
+    '  vec2 id=floor(g);',
+    '  float rnd=h21(id);',
+    '  vec2 off=(vec2(h21(id+7.1),h21(id+3.7))-.5)*.7;',
+    '  float sd=length(fract(g)-.5-off);',
+    '  float tw=.55+.45*sin(uT*(1.2+rnd*3.)+rnd*40.);',
+    '  col+=vec3(.85,.9,1.)*step(.965,rnd)*(1.-smoothstep(0.,.3,sd))*tw*(.35+.65*uWake)*(1.-.8*cloud*uWake);',
+    '  col*=1.-.55*smoothstep(.45,1.15,length(p*vec2(.8,1.)));',
+    '  gl_FragColor=vec4(col,1.);',
+    '}'
+  ].join('\n');
+  // The cover as a living painting: asleep in cold grey until a wave of colour leaves the fire,
+  // then heat haze, a flickering flame and slow starlight.
+  var COVER_FS = [
+    GLSL_NOISE,
+    'uniform sampler2D uTex;', 'uniform float uT;', 'uniform float uWake;', 'uniform vec2 uPar;', 'uniform float uLit;',
+    'varying vec2 vUv;',
+    'float fbm(vec2 p){float a=.5;float s=0.;for(int i=0;i<3;i++){s+=a*vn(p);p=p*2.03+vec2(11.7,5.3);a*=.5;}return s;}',
+    'void main(){',
+    '  vec2 uv=vUv;',
+    '  vec2 dv=(uv-vec2(.635,.825))*vec2(.6709,1.);',
+    '  float d=length(dv);',
+    '  float on=step(.0005,uWake);',
+    '  float R=uWake*1.3;',
+    '  float m=(1.-smoothstep(R-.24,R,d))*on;',
+    '  float hz=exp(-d*d*30.)*m;',
+    '  uv+=(vec2(vn(uv*vec2(14.,20.)+vec2(0.,-uT*1.7)),vn(uv*vec2(14.,20.)+vec2(7.3,-uT*1.4)))-.5)*.012*hz;',
+    '  uv+=uPar*.01;',
+    '  vec3 base=texture2D(uTex,uv).rgb;',
+    '  float l=dot(base,vec3(.299,.587,.114));',
+    '  vec3 asleep=vec3(l*.40,l*.44,l*.56)*.8;',
+    '  vec3 col=mix(asleep,base,m);',
+    '  float e=(d-R)*6.5;',
+    '  float front=exp(-e*e)*on*(1.-smoothstep(.72,1.,uWake));',
+    '  col+=vec3(1.,.52,.16)*front*(.55+.5*l);',
+    '  float fl=fbm(vec2(dv.x*11.,dv.y*11.-uT*1.5));',
+    '  col+=vec3(1.,.5,.12)*exp(-d*d*42.)*(.2+.6*fl)*m;',
+    '  col+=base*vec3(1.,.62,.3)*exp(-d*d*5.)*.16*m*(.7+.3*sin(uT*2.3)+.4*(fl-.5));',
+    '  float sky=1.-smoothstep(.15,.5,uv.y);',
+    '  float tw=vn(uv*vec2(150.,224.)+uT*.7);',
+    '  col+=base*smoothstep(.6,.92,l)*sky*(tw-.45)*.9*m;',
+    '  col*=uLit;',
+    '  gl_FragColor=vec4(col,1.);',
+    '}'
+  ].join('\n');
+
+  function book(W) {
+    var ww = W.$('.ww');
+    if (!ww) return;
+    var track = W.$('.ww-track', ww), pin = W.$('.ww-pin', ww);
+    if (!track || !pin || !W.$('.ww-book', pin) || !W.$('.ww-zoom', pin) || !W.$('.ww-pan', pin)) return;
+    // The motion layout only switches on once this module runs, so a failure leaves the readable static version.
+    ww.classList.add('is-fx');
+    W.cleanup(function () { ww.classList.remove('is-fx'); pin.style.clipPath = ''; track.style.height = ''; });
+    try { bookWorld(W, ww, track, pin); }
+    catch (err) { ww.classList.remove('is-fx'); pin.style.clipPath = ''; track.style.height = ''; throw err; }
+  }
+
+  function bookWorld(W, ww, track, pin) {
+    var gsap = W.gsap, ST = W.ST, win = W.win, doc = W.doc;
+    var q = function (s) { return W.$(s, pin); }, qa = function (s) { return W.$$(s, pin); };
+    var zoomEl = q('.ww-zoom'), panEl = q('.ww-pan'), bookEl = q('.ww-book'), aura = q('.bk-aura'), leftCol = q('.ww-left');
+    var shell = q('.bk-shell'), shellFaces = qa('.bk-shell > *'), lid = q('.bk-lid'), lidFaces = qa('.bk-lid > .bk-face');
+    var front = q('.bk-front'), frontImg = q('.bk-front img'), glc = q('.bk-gl'), orbEl = q('.bk-orb'), sheen = q('.bk-sheen');
+    var page = q('.bk-page'), roll = q('.pg-roll'), feed = q('.pg-feed'), sheetsWrap = q('.bk-sheets'), sheets = qa('.bk-sheets i');
+    var neb = q('.ww-neb'), emb = q('.ww-emb'), shade2 = q('.ww-shade2');
+    var chaps = qa('.ww-ch'), hint = q('.ww-hint'), hintLab = q('.ww-hint .rd');
+    var lock = q('.ww-lock'), buy = q('.ww-buy'), grpA = q('.ww-grp-a'), grpB = q('.ww-grp-b'), lines = qa('.ww-lines li');
+    var letters = qa('.ww-title .wl'), kick = q('.ww-kick'), by = q('.ww-by'), tag = q('.ww-tag');
+    var fmts = qa('.ww-fmt'), facts = qa('.ww-facts li');
+    var netHubs = qa('.nt-h, .nt-t'), netNodes = qa('.nt-n'), netLines = qa('.nt-lf'), netHubLine = q('.nt-hub');
+    if (!shell || !lid || !page) throw new Error('book markup incomplete');
+
+    /* theme-crossfade-morph: the accent of the whole site re-skins while the HUD holds still.
+       Registering the tokens as colours lets one CSS transition blend every accent at once. */
+    [['--acid', '#d4ff3f'], ['--acid-hi', '#e6ff86']].forEach(function (d) {
+      try { if (win.CSS && win.CSS.registerProperty) win.CSS.registerProperty({ name: d[0], syntax: '<color>', inherits: true, initialValue: d[1] }); } catch (e) {}
+    });
+    function setTheme(on) { W.root.classList.toggle('is-ww', on); W.theme = on ? 'ember' : ''; }
+    ST.create({ trigger: ww, start: 'top 55%', end: 'bottom 88%', onToggle: function (s) { setTheme(s.isActive); } });
+    W.cleanup(function () { setTheme(false); });
+
+    /* dynamic-content-sequencing: each back-cover line earns scroll time from its own length */
+    var UNIT = 72, cum = 4.05;
+    var SEQ = lines.map(function (li) {
+      var dur = 0.34 + (li.textContent || '').length * 0.0024, w = { start: cum, end: cum + dur };
+      cum += dur; return w;
+    });
+    var T = { b: 0.95, c: 2.2, spin0: 2.6, spin1: 3.7, d: 4.0, e: cum, e2: cum + 0.28, buy: cum + 0.5, end: cum + 1.45 };
+    track.style.height = Math.round(100 + T.end * UNIT) + 'vh';
+
+    // One state object; the scrubbed timeline and the triggered beats write it, one loop reads it.
+    var S = { ry: -14, rx: 4, pb: 0, cam: 0, lidA: -128, lidO: 0, sheet: 0, shell: 0, morph: 0, roll: 0,
+      wake: 0, sq: 0, imp: 0, shake: 0, lift: 0, dragY: 0, dragX: 0, idle: 0 };
+    var vw = 1, vh = 1, bw = 1, bh = 1, mob = false, K = [], rollD = 0, lockH = 0, buyH = 0, poseB = { ry: -20, rx: -17 };
+    var active = false, clock = 0, flatNow = 0, frame = 0, armed = false, lastT = 0, Q = 1, slow = 0, lastNow = 0;
+    var C = { z: 1, fu: 0.5, fv: 0.5, ax: 0, ay: 0 }, last = {};
+    var dragging = false, dragged = false, releasing = false, buyOn = false;
+
+    /* ---- text panels: reactive-displacement. One driver per swap, the leaving panel is gone at 45% ---- */
+    var panels = [], drivers = [];
+    function addPanel(el, on, plain) {
+      if (!el) return null;
+      var p = { el: el, on: on, vis: false, y: 0, o: 0, r: 0, base: 0, gen: 0, cy: true, plain: !!plain };
+      panels.push(p); return p;
+    }
+    // Hidden panels stay in the accessibility tree (opacity, never visibility), so a screen reader
+    // gets the whole story in document order without having to scroll through the animation.
+    function drawPanel(p) {
+      var y = p.y + p.base;
+      p.el.style.transform = 'translate3d(0,' + (p.cy ? 'calc(-50% + ' + y.toFixed(1) + 'px)' : y.toFixed(1) + 'px') + ',0)' + (p.r ? ' rotate(' + p.r.toFixed(2) + 'deg)' : '');
+      p.el.style.opacity = p.o.toFixed(3);
+      p.el.style.pointerEvents = p.o < 0.5 ? 'none' : 'auto';
+    }
+    addPanel(grpA, function (t) { return t < T.b; });
+    addPanel(grpB, function (t) { return t >= T.b && t < T.c; });
+    var pLock = addPanel(lock, function (t) { return (t >= T.c && t < T.d) || t >= T.e2; });
+    lines.forEach(function (li, i) {
+      var w = SEQ[i], lastOne = i === lines.length - 1;
+      addPanel(li, function (t) { return t >= w.start && t < (lastOne ? T.e : w.end); });
+    });
+    var pBuy = addPanel(buy, function (t) { return t >= T.buy; }, true);
+    var GAP = 26;
+    function placeBases() {
+      if (pBuy) pBuy.base = mob ? lockH + 18 : (lockH + GAP) / 2;
+      if (pLock) { gsap.killTweensOf(pLock, 'base'); pLock.base = (!mob && buyOn) ? -(buyH + GAP) / 2 : 0; }
+    }
+    function syncPanels(t, dir, instant) {
+      var ins = [], outs = [];
+      panels.forEach(function (p) {
+        var want = p.on(t);
+        if (want !== p.vis) { p.vis = want; p.gen++; (want ? ins : outs).push(p); }
+      });
+      if (!ins.length && !outs.length) return;
+      var sign = dir < 0 ? -1 : 1, dist = mob ? 44 : 84;
+      var gi = ins.map(function (p) { return p.gen; }), go = outs.map(function (p) { return p.gen; });
+      var o0 = outs.map(function (p) { return p.o; }), y0 = outs.map(function (p) { return p.y; });
+      function step(k) {
+        var kc = Math.max(0, k), vk = Math.min(1, kc / 0.45), i, p;
+        for (i = 0; i < ins.length; i++) {
+          p = ins[i]; if (p.gen !== gi[i]) continue;
+          if (p.plain) { p.y = 0; p.o = 1; p.r = 0; }
+          else { p.y = sign * dist * (1 - k); p.o = Math.min(1, kc * 4); p.r = mob ? 0 : -sign * 1.4 * (1 - k); }
+          drawPanel(p);
+        }
+        for (i = 0; i < outs.length; i++) {
+          p = outs[i]; if (p.gen !== go[i]) continue;
+          p.y = y0[i] + (-sign * dist * 0.8 - y0[i]) * vk; p.o = o0[i] * (1 - vk); p.r = mob ? 0 : sign * 1.8 * vk;
+          drawPanel(p);
+        }
+      }
+      step(instant ? 1 : 0);
+      if (!instant) {
+        var d = { k: 0 };
+        drivers.push(d);
+        gsap.to(d, { k: 1, duration: 0.85, ease: 'back.out(1.5)', onUpdate: function () { step(d.k); }, onComplete: function () { var i = drivers.indexOf(d); if (i >= 0) drivers.splice(i, 1); } });
+      }
+      if (pBuy && ins.indexOf(pBuy) >= 0) buyIn(instant);
+      if (pBuy && outs.indexOf(pBuy) >= 0) buyOut(instant);
+    }
+
+    /* ---- sequential reveals inside a panel (the origin story arrives one sentence at a time) ---- */
+    var reveals = [];
+    function addReveal(el, at) { reveals.push({ el: el, at: at, on: false }); el.style.opacity = '0'; }
+    if (grpA) W.$$('p', grpA).forEach(function (p, i) { addReveal(p, [-1, 0.3, 0.6][i] || 0); });
+    if (grpB) W.$$('p', grpB).forEach(function (p, i) { addReveal(p, T.b + ([0, 0.38, 0.8][i] || 0)); });
+    gsap.set(reveals.map(function (r) { return r.el; }), { y: 16 });
+    function syncReveals(t, instant) {
+      reveals.forEach(function (r) {
+        var want = t >= r.at; if (want === r.on) return; r.on = want;
+        gsap.to(r.el, { opacity: want ? 1 : 0, y: want ? 0 : 16, duration: instant ? 0 : (want ? 0.7 : 0.25), ease: 'power3.out', overwrite: true });
+      });
+    }
+
+    /* ---- chapter label: scale-swap-transition (shrink out fast, pop in with weight) ---- */
+    var chapNow = -1;
+    function setChap(k, instant) {
+      if (k === chapNow) return;
+      var prev = chaps[chapNow], next = chaps[k]; chapNow = k;
+      if (prev) gsap.to(prev, { scale: 0.7, opacity: 0, duration: instant ? 0 : 0.3, ease: 'power2.in', overwrite: true });
+      if (next) gsap.fromTo(next, { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: instant ? 0 : 0.55, delay: instant ? 0 : 0.18, ease: 'back.out(1.8)', overwrite: true });
+    }
+
+    /* ---- the wake: asr-keyword-glow. One linear driver, an attack / sustain / release envelope per letter ---- */
+    var WAKE = 2.4, ATTACK = 0.06, RELEASE = 0.5, REST = 0.2;
+    var LT = letters.map(function (el, i) { var s = 0.2 + i * 0.085; return { el: el, start: s, end: s + 0.075 }; });
+    var subs = [{ el: kick, at: 0.05 }, { el: by, at: 1.62 }, { el: tag, at: 2.0 }].filter(function (s) { return !!s.el; });
+    subs.forEach(function (s) { s.on = false; });
+    gsap.set(subs.map(function (s) { return s.el; }), { opacity: 0, y: 14 });
+    function env(time, s, e) {
+      if (time < s) return 0;
+      if (time < e) return Math.min((time - s) / ATTACK, 1);
+      if (time < e + RELEASE) return 1 - ((time - e) / RELEASE) * (1 - REST);
+      return REST;
+    }
+    function applyWake() {
+      var time = S.wake * WAKE;
+      for (var i = 0; i < LT.length; i++) {
+        var L = LT[i], e = env(time, L.start, L.end), lit = time >= L.start;
+        // karaoke style: dim before its beat, flame at the peak, warm silver at rest
+        L.el.style.color = lit ? 'rgb(' + Math.round(lerp(229, 255, e)) + ',' + Math.round(lerp(224, 212, e)) + ',' + Math.round(lerp(214, 150, e)) + ')' : 'rgb(58,63,74)';
+        L.el.style.textShadow = e > 0.001 ? '0 0 ' + (36 * e).toFixed(1) + 'px rgba(255,138,43,' + (0.18 + 0.72 * e).toFixed(2) + ')' : 'none';
+        L.el.style.transform = 'scale(' + (1 + 0.2 * Math.max(0, e - REST) / (1 - REST)).toFixed(3) + ')';
+      }
+      subs.forEach(function (s) {
+        var want = time >= s.at; if (want === s.on) return; s.on = want;
+        gsap.to(s.el, { opacity: want ? 1 : 0, y: want ? 0 : 14, duration: want ? 0.7 : 0.2, ease: 'power3.out', overwrite: true });
+      });
+      bookEl.style.setProperty('--wk', S.wake.toFixed(3));
+    }
+    var wakeOn = false, wakeTw = null;
+    function setWake(on, instant) {
+      if (on === wakeOn) return; wakeOn = on;
+      if (wakeTw) wakeTw.kill();
+      var dur = instant ? 0 : (on ? WAKE * (1 - S.wake) : 0.45 * S.wake + 0.05);
+      wakeTw = gsap.to(S, { wake: on ? 1 : 0, duration: dur, ease: 'none', onUpdate: applyWake, onComplete: applyWake });
+      gsap.to(S, { idle: on ? 1 : 0, duration: instant ? 0 : 1.4, ease: 'power2.out', overwrite: 'auto' });
+    }
+
+    /* ---- the thud: physics-press-reaction. Cover and block compress together, then spring back ---- */
+    function thud() {
+      gsap.killTweensOf(S, 'sq,imp,shake');
+      gsap.timeline().to(S, { sq: 1, duration: 0.09, ease: 'power1.in' }).to(S, { sq: 0, duration: 0.6, ease: 'back.out(2)' });
+      gsap.fromTo(S, { imp: 1 }, { imp: 0, duration: 0.9, ease: 'power2.out' });
+      gsap.fromTo(S, { shake: 1 }, { shake: 0, duration: 0.5, ease: 'power2.out' });
+      sparks(W.coarse ? 28 : 46);
+    }
+
+    /* ---- the editions: center-outward-expansion out of the book, landing as split-tilt-cards;
+            the lockup makes room with a nudge-curve, the facts arrive as spring-pop-entrance ---- */
+    var FM = fmts.map(function (el, i) { return { el: el, k: 0, hov: 0, dx: 0, dy: 0, tilt: fmts.length === 3 ? (1 - i) * 13 : 0 }; });
+    var buyD = { p: 0 };
+    function drawFmt(f) {
+      var bob = buyD.p * Math.sin(clock * 1.4 + (f.tilt ? 0 : Math.PI)) * 3 * (1 - f.hov), k = f.k;
+      f.el.style.transform = 'translate3d(' + (f.dx * (1 - k)).toFixed(1) + 'px,' + (f.dy * (1 - k) + bob).toFixed(1) + 'px,0) rotateY(' + (f.tilt * k * (1 - f.hov)).toFixed(2) + 'deg) scale(' + (0.3 + 0.7 * k + 0.04 * f.hov).toFixed(3) + ')';
+      f.el.style.opacity = Math.min(1, k * 2.5).toFixed(3);
+    }
+    function nudge(on, instant) {
+      if (!pLock) return;
+      var to = (!mob && on) ? -(buyH + GAP) / 2 : 0, from = pLock.base, d = to - from;
+      var draw = function () { drawPanel(pLock); };
+      gsap.killTweensOf(pLock, 'base');
+      if (instant || Math.abs(d) < 1) { pLock.base = to; draw(); return; }
+      if (!on) { gsap.to(pLock, { base: to, duration: 0.45, ease: 'power3.out', onUpdate: draw }); return; }
+      // slow, fast, slow: 10 / 65 / 25 of the distance over 20 / 18 / 62 of the time
+      var D = 0.9;
+      gsap.timeline({ onUpdate: draw })
+        .to(pLock, { base: from + d * 0.10, duration: D * 0.20, ease: 'power3.in' })
+        .to(pLock, { base: from + d * 0.75, duration: D * 0.18, ease: 'none' })
+        .to(pLock, { base: to, duration: D * 0.62, ease: 'power4.out' });
+    }
+    function buyIn(instant) {
+      buyOn = true;
+      var pr = pin.getBoundingClientRect(), cx = pr.left + vw / 2 + K[0].ax * vw, cy = pr.top + vh / 2 + K[0].ay * vh;
+      FM.forEach(function (f) {
+        f.el.style.transform = 'none';
+        var r = f.el.getBoundingClientRect();
+        f.dx = cx - (r.left + r.width / 2); f.dy = cy - (r.top + r.height / 2); f.k = 0;
+      });
+      gsap.killTweensOf(buyD); buyD.p = 0;
+      gsap.to(buyD, { p: 1, duration: instant ? 0 : 1.15, ease: 'power3.out', onUpdate: function () {
+        FM.forEach(function (f, i) { f.k = clamp((buyD.p - i * 0.05) / 0.9, 0, 1); });
+      } });
+      gsap.fromTo(facts, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: instant ? 0 : 0.55, ease: 'power3.out', stagger: instant ? 0 : 0.06, delay: instant ? 0 : 0.5, overwrite: true });
+      nudge(true, instant);
+    }
+    function buyOut(instant) {
+      buyOn = false; gsap.killTweensOf(buyD);
+      nudge(false, instant);
+    }
+    FM.forEach(function (f) {
+      W.on(f.el, 'pointerenter', function () { gsap.to(f, { hov: 1, duration: 0.35, ease: 'power3.out', overwrite: true }); });
+      W.on(f.el, 'pointerleave', function () { gsap.to(f, { hov: 0, duration: 0.6, ease: 'power3.out', overwrite: true }); });
+    });
+    // Keyboard: tabbing onto an edition link while it is still off stage brings its scene to the reader.
+    if (buy) W.on(buy, 'focusin', function () {
+      if (pBuy && pBuy.vis) return;
+      var r = track.getBoundingClientRect(), y = r.top + (win.scrollY || 0) + (r.height - vh) * Math.min(1, (T.buy + 0.7) / T.end);
+      win.scrollTo(0, y);
+    });
+
+    /* ---- hint ---- */
+    var hintOn = false;
+    if (hintLab && W.coarse) hintLab.setAttribute('data-v', 'Swipe the book to turn it');
+    function setHint(on) {
+      if (!hint || on === hintOn) return; hintOn = on;
+      gsap.to(hint, { opacity: on ? 1 : 0, duration: 0.5, overwrite: true });
+    }
+
+    /* ---- the server: avatar-cloud-network. Two members; one of them played everybody, the other played one ---- */
+    var netEls = netHubs.concat(netNodes), netIned = false;
+    gsap.set(netEls, { scale: 0, opacity: 0, transformOrigin: '50% 50%' });
+    netLines.concat(netHubLine ? [netHubLine] : []).forEach(function (l) {
+      var len = Math.hypot(l.x2.baseVal.value - l.x1.baseVal.value, l.y2.baseVal.value - l.y1.baseVal.value);
+      l.style.strokeDasharray = len.toFixed(1) + ' ' + len.toFixed(1); l.style.strokeDashoffset = len.toFixed(1);
+    });
+    function netIn() {
+      if (netIned) return; netIned = true;
+      var tl = gsap.timeline();
+      tl.to(netHubs, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.6)', stagger: 0.04 }, 0);
+      if (netHubLine) tl.to(netHubLine, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.out' }, 0.25);
+      tl.to(netNodes, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.7)', stagger: 0.08 }, 0.4);
+      tl.to(netLines, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.out', stagger: 0.035 }, 0.4 + Math.max(0, netNodes.length - 1) * 0.08 - 0.15);
+    }
+    ST.create({ trigger: ww, start: 'top 40%', once: true, onEnter: netIn });
+
+    /* ---- layout: everything the camera needs is measured here, never per frame ---- */
+    function layout() {
+      vw = pin.clientWidth || win.innerWidth; vh = pin.clientHeight || win.innerHeight;
+      bw = bookEl.offsetWidth || 1; bh = bookEl.offsetHeight || 1;
+      mob = (win.getComputedStyle(ww).getPropertyValue('--mob') || '').trim() === '1';
+      var gut = leftCol ? leftCol.offsetLeft : 24, colW = leftCol ? leftCol.offsetWidth : 0;
+      var hx = mob ? 0 : clamp(((gut + colW + 40 + vw - gut) / 2) / vw - 0.5, 0.15, 0.26);
+      var home = { z: 1, fu: 0.5, fv: 0.5, ax: hx, ay: mob ? -0.2 : 0.005 };
+      var zf = (mob ? Math.min(0.9 * vw / 0.6709, 0.6 * vh) : 0.84 * vh) / bh;
+      var full = { z: zf, fu: 0.5, fv: 0.5, ax: mob ? 0 : Math.max(0.13, hx - 0.04), ay: mob ? -0.085 : 0.03 };
+      var zd = (mob ? 1.2 : 1.75) * vh / bh, wc = zd * bw;
+      // inside the cover the painting should run off the right edge of the screen, whatever the aspect ratio
+      var edge = function (fu) { return clamp((vw + 24 - (1 - fu) * wc) / vw - 0.5, 0.14, 0.3); };
+      var woman = { z: zd, fu: 0.57, fv: mob ? 0.43 : 0.42, ax: mob ? 0 : edge(0.57), ay: mob ? -0.2 : -0.04 };
+      var orb = { z: zd, fu: mob ? 0.62 : 0.635, fv: 0.825, ax: mob ? 0 : edge(0.635), ay: mob ? -0.14 : 0.2 };
+      K = [home, full, woman, orb, full, home];
+      // While the book is assembled its pages swing in from the left. If they would cross the text,
+      // the book turns the other way and they arrive from the front instead.
+      var textR = gut + (grpB ? grpB.offsetWidth : colW) + 16;
+      poseB = (mob || vw / 2 + hx * vw - 1.4 * bw >= textR) ? { ry: -20, rx: -17 } : { ry: 36, rx: -16 };
+      rollD = Math.max(0, (roll ? roll.scrollHeight : 0) - (feed ? feed.clientHeight : 0));
+      lockH = lock ? lock.offsetHeight : 0; buyH = buy ? buy.offsetHeight : 0;
+      panels.forEach(function (p) { p.cy = !mob; });
+      placeBases();
+      panels.forEach(drawPanel);
+      last = {};
+    }
+    function camAt(c) {
+      var i = clamp(Math.floor(c), 0, K.length - 2), f = clamp(c - i, 0, 1), a = K[i], b = K[i + 1];
+      C.z = a.z * Math.pow(b.z / a.z, f); C.fu = lerp(a.fu, b.fu, f); C.fv = lerp(a.fv, b.fv, f); C.ax = lerp(a.ax, b.ax, f); C.ay = lerp(a.ay, b.ay, f);
+    }
+    // 0 while the book is an object in space, 1 while the camera is inside the painting
+    function flatness(c) { return c < 2 ? smooth(1.05, 1.6, c) : 1 - smooth(3.4, 3.95, c); }
+
+    /* ---- nebula: fragment shader behind everything ---- */
+    var nebGL = null, nebU = {}, nebOK = false;
+    function fullQuad(gl, prog) {
+      var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      gl.useProgram(prog);
+    }
+    function lose(gl) { try { var x = gl.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); } catch (e) {} }
+    function sizeNeb() {
+      if (!nebGL) return;
+      var s = (W.coarse ? 0.42 : 0.5) * Math.min(win.devicePixelRatio || 1, 1.25) * Q;
+      neb.width = Math.max(2, Math.round(vw * s)); neb.height = Math.max(2, Math.round(vh * s));
+      nebGL.viewport(0, 0, neb.width, neb.height);
+    }
+    function setupNeb(gl) {
+      var prog = mkProgram(gl, QUAD_VS, NEB_FS);
+      fullQuad(gl, prog);
+      ['uRes', 'uT', 'uWake', 'uOrb'].forEach(function (n) { nebU[n] = gl.getUniformLocation(prog, n); });
+    }
+    function initNeb() {
+      if (!neb) return;
+      var gl = null;
+      try { gl = neb.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance' }); } catch (e) { gl = null; }
+      if (!gl) return;
+      try { setupNeb(gl); } catch (err) { if (win.console) console.warn('[ak] nebula shader', err); return; }
+      nebGL = gl; nebOK = true;
+      // a phone can drop the context in the background; rebuild it when it comes back
+      W.on(neb, 'webglcontextlost', function (e) { e.preventDefault(); nebOK = false; });
+      W.on(neb, 'webglcontextrestored', function () { try { setupNeb(gl); sizeNeb(); nebOK = true; } catch (err) { nebOK = false; } });
+      W.cleanup(function () { lose(gl); });
+      sizeNeb();
+    }
+    function renderNeb(ox, oy) {
+      // half rate is plenty for slow clouds; skipped while the painting covers the screen
+      if (!nebOK || (frame & 1) || (S.cam > 1.6 && S.cam < 3.4)) return;
+      var gl = nebGL;
+      gl.uniform2f(nebU.uRes, neb.width, neb.height);
+      gl.uniform1f(nebU.uT, clock);
+      gl.uniform1f(nebU.uWake, S.wake);
+      gl.uniform2f(nebU.uOrb, ox, oy);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    /* ---- living cover: the front cover runs through a fragment shader ---- */
+    var cvGL = null, cvU = {}, cvOK = false, cvW = 0, parX = 0, parY = 0;
+    function setupCover(gl) {
+      var prog = mkProgram(gl, QUAD_VS, COVER_FS);
+      // Power-of-two copy so the texture can carry mipmaps: sharp inside the painting, calm when small.
+      var maxT = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 1024, big = maxT >= 2048;
+      var oc = doc.createElement('canvas'); oc.width = (big && !W.coarse) ? 2048 : 1024; oc.height = big ? 2048 : 1024;
+      oc.getContext('2d').drawImage(frontImg, 0, 0, oc.width, oc.height);
+      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, oc);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      fullQuad(gl, prog);
+      ['uTex', 'uT', 'uWake', 'uPar', 'uLit'].forEach(function (n) { cvU[n] = gl.getUniformLocation(prog, n); });
+      gl.uniform1i(cvU.uTex, 0);
+    }
+    function initCover() {
+      if (!glc || !frontImg || !front) return;
+      function go() {
+        if (cvGL) return;
+        var gl = null;
+        try { gl = glc.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false }); } catch (e) { gl = null; }
+        if (!gl) return;
+        // any failure here (no WebGL, a tainted image, a bad driver) leaves the plain cover image in place
+        try { setupCover(gl); } catch (err) { if (win.console) console.warn('[ak] cover shader', err); lose(gl); return; }
+        cvGL = gl; cvOK = true; cvW = 0;
+        front.classList.add('is-gl');
+        W.on(glc, 'webglcontextlost', function (e) { e.preventDefault(); cvOK = false; front.classList.remove('is-gl'); });
+        W.on(glc, 'webglcontextrestored', function () { try { setupCover(gl); cvW = 0; cvOK = true; front.classList.add('is-gl'); } catch (err) { cvOK = false; } });
+        W.cleanup(function () { front.classList.remove('is-gl'); lose(gl); });
+      }
+      if (frontImg.complete && frontImg.naturalWidth) go(); else W.on(frontImg, 'load', go);
+    }
+    function renderCover(a) {
+      if (!cvOK || Math.abs(a) > 100 || S.lidO < 0.01) return;
+      // the backing store follows the size on screen (never past the artwork), with a little supersampling
+      var gl = cvGL, cap = Math.round(1536 * Q), need = clamp(bw * Math.min(win.devicePixelRatio || 1, 2) * C.z * 1.35, 320, cap), resized = false;
+      if (need > cvW * 1.02 || need < cvW * 0.5) {
+        cvW = Math.min(cap, Math.ceil(need * 1.15));
+        glc.width = cvW; glc.height = Math.round(cvW / 0.6709);
+        gl.viewport(0, 0, glc.width, glc.height);
+        resized = true;
+      }
+      // a large canvas only redraws on the frames the nebula skips
+      if (!resized && cvW > 900 && !(frame & 1)) return;
+      gl.uniform1f(cvU.uT, clock);
+      gl.uniform1f(cvU.uWake, S.wake);
+      gl.uniform2f(cvU.uPar, parX, parY);
+      gl.uniform1f(cvU.uLit, 0.82 + 0.18 * Math.cos(a * Math.PI / 180) + 0.5 * S.imp);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    /* ---- embers: Canvas 2D, additive. They rise from the fire on the cover, and burst at the thud ---- */
+    var eg = null, edpr = 1, parts = [], seedN = 1, emitAcc = 0, embDirty = false;
+    try { eg = emb ? emb.getContext('2d') : null; } catch (e) { eg = null; }
+    function rnd() { seedN += 1; return hash(seedN * 1.618); }
+    function sizeEmb() {
+      if (!eg) return;
+      edpr = Math.min(win.devicePixelRatio || 1, 2);
+      emb.width = Math.max(2, Math.round(vw * edpr)); emb.height = Math.max(2, Math.round(vh * edpr));
+    }
+    function sparks(n) {
+      if (!eg) return;
+      var br = bookEl.getBoundingClientRect(), pr = pin.getBoundingClientRect();
+      var cx = br.left + br.width / 2 - pr.left, cy = br.top + br.height / 2 - pr.top;
+      for (var i = 0; i < n; i++) {
+        var ang = rnd() * 6.2832, ex = Math.cos(ang), ey = Math.sin(ang);
+        var k = Math.min(br.width / 2 / Math.max(0.001, Math.abs(ex)), br.height / 2 / Math.max(0.001, Math.abs(ey))) * 0.9;
+        var sp = 140 + rnd() * 420;
+        parts.push({ x: cx + ex * k, y: cy + ey * k, vx: ex * sp, vy: ey * sp - 60, t: 0, life: 0.5 + rnd() * 0.7, sz: 1.2 + rnd() * 2.2, g: 380, drag: 2.2, w: -1 });
+      }
+    }
+    function emit(dt, a, ox, oy) {
+      if (S.wake < 0.2 || Math.abs(a) > 78 || S.lidO < 0.5) return;
+      if (ox < -40 || ox > vw + 40 || oy < -40 || oy > vh + 40) return;
+      emitAcc += (W.coarse ? 16 : 30) * Q * S.wake * (0.6 + 0.4 * flatNow) * dt;
+      var zs = Math.sqrt(C.z), R = bh * 0.045 * C.z, cap = W.coarse ? 80 : 160;
+      while (emitAcc >= 1) {
+        emitAcc -= 1;
+        if (parts.length > cap) continue;
+        var ang = rnd() * 6.2832, rr = Math.sqrt(rnd()) * R;
+        parts.push({ x: ox + Math.cos(ang) * rr, y: oy + Math.sin(ang) * rr * 0.8, vx: (rnd() - 0.4) * 46 * zs, vy: -(40 + rnd() * 90) * zs, t: 0, life: 1.1 + rnd() * 1.6, sz: (0.9 + rnd() * 1.9) * zs, g: -26, drag: 0.5, w: rnd() * 6.2832 });
+      }
+    }
+    function renderEmbers(dt, a, ox, oy) {
+      if (!eg) return;
+      emit(dt, a, ox, oy);
+      if (!parts.length) {
+        if (embDirty) { eg.setTransform(1, 0, 0, 1, 0, 0); eg.clearRect(0, 0, emb.width, emb.height); embDirty = false; }
+        return;
+      }
+      embDirty = true;
+      eg.setTransform(1, 0, 0, 1, 0, 0); eg.clearRect(0, 0, emb.width, emb.height);
+      eg.setTransform(edpr, 0, 0, edpr, 0, 0);
+      eg.globalCompositeOperation = 'lighter';
+      for (var i = parts.length - 1; i >= 0; i--) {
+        var p = parts[i]; p.t += dt;
+        var k = p.t / p.life;
+        if (k >= 1) { parts.splice(i, 1); continue; }
+        if (p.w >= 0) p.vx += Math.sin(p.w + p.t * 3.1) * 40 * dt;
+        var dr = Math.max(0, 1 - p.drag * dt);
+        p.vx *= dr; p.vy = p.vy * dr + p.g * dt;
+        p.x += p.vx * dt; p.y += p.vy * dt;
+        var al = k < 0.12 ? k / 0.12 : 1 - (k - 0.12) / 0.88, s = p.sz * (1 - 0.5 * k);
+        eg.fillStyle = 'rgba(255,120,30,' + (al * 0.13).toFixed(3) + ')';
+        eg.beginPath(); eg.arc(p.x, p.y, s * 3.2, 0, 6.2832); eg.fill();
+        eg.fillStyle = 'rgba(255,' + Math.round(lerp(214, 72, k)) + ',' + Math.round(lerp(128, 12, k)) + ',' + (al * 0.92).toFixed(3) + ')';
+        eg.beginPath(); eg.arc(p.x, p.y, s, 0, 6.2832); eg.fill();
+      }
+      eg.globalCompositeOperation = 'source-over';
+    }
+
+    /* ---- cursor-drag, with a real pointer: grab (press dip, then lift), carry, drop-snap onto a face ---- */
+    var pid = -1, dsx = 0, dsy = 0, dY0 = 0, dX0 = 0, vyaw = 0, lmx = 0, lmt = 0;
+    function canDrag() { return flatNow < 0.2 && S.lidO > 0.99 && S.lidA > -1; }
+    W.on(bookEl, 'pointerdown', function (e) {
+      if (!canDrag() || (e.button !== undefined && e.button > 0)) return;
+      dragging = true; dragged = true; releasing = false; pid = e.pointerId;
+      dsx = lmx = e.clientX; dsy = e.clientY; dY0 = S.dragY; dX0 = S.dragX; vyaw = 0; lmt = win.performance.now();
+      try { bookEl.setPointerCapture(pid); } catch (err) {}
+      bookEl.classList.add('is-grab');
+      gsap.killTweensOf(S, 'dragY,dragX,lift');
+      gsap.timeline().to(S, { lift: -0.6, duration: 0.07, ease: 'power1.in' }).to(S, { lift: 1, duration: 0.3, ease: 'back.out(2)' });
+      setHint(false);
+    });
+    W.on(bookEl, 'pointermove', function (e) {
+      if (!dragging || e.pointerId !== pid) return;
+      var now = win.performance.now();
+      S.dragY = dY0 + (e.clientX - dsx) * 0.42;
+      S.dragX = clamp(dX0 - (e.clientY - dsy) * 0.12, -16, 16);
+      vyaw = lerp(vyaw, (e.clientX - lmx) * 0.42 / Math.max(1, now - lmt) * 1000, 0.5);
+      lmx = e.clientX; lmt = now;
+    });
+    function endDrag(e) {
+      if (!dragging || (e && e.pointerId !== undefined && e.pointerId !== pid)) return;
+      dragging = false; bookEl.classList.remove('is-grab');
+      try { bookEl.releasePointerCapture(pid); } catch (err) {}
+      gsap.killTweensOf(S, 'dragY,dragX,lift');
+      var target = Math.round((S.dragY + clamp(vyaw, -900, 900) * 0.22) / 180) * 180;
+      gsap.to(S, { dragY: target, dragX: 0, duration: 1.1, ease: 'elastic.out(1, 0.7)' });
+      gsap.to(S, { lift: 0, duration: 0.5, ease: 'power3.out' });
+    }
+    W.on(bookEl, 'pointerup', endDrag);
+    W.on(bookEl, 'pointercancel', endDrag);
+    W.on(bookEl, 'lostpointercapture', endDrag);
+    function releaseDrag() {   // scrolling takes the book back, by the shortest way round
+      if (dragging || releasing) return;
+      releasing = true;
+      gsap.killTweensOf(S, 'dragY,dragX');
+      gsap.to(S, { dragY: Math.round(S.dragY / 360) * 360, dragX: 0, duration: 0.7, ease: 'power3.out', onComplete: function () { S.dragY = 0; releasing = false; } });
+    }
+
+    /* ---- iris: the section opens like a planet rising, a circle that grows as it arrives ---- */
+    function iris(p) { if (neb) neb.style.clipPath = p >= 0.999 ? 'none' : 'circle(' + (Math.pow(p, 1.25) * 76).toFixed(2) + '% at 50% 50%)'; }
+    var irisST = ST.create({ trigger: ww, start: 'top bottom', end: 'top top', onUpdate: function (s) { iris(s.progress); }, onRefresh: function (s) { iris(s.progress); } });
+    iris(irisST.progress || 0);
+    W.cleanup(function () { if (neb) neb.style.clipPath = ''; });
+
+    /* ---- the scrubbed timeline: pose and camera only. Words and beats are triggered from onUpdate ---- */
+    layout();
+    function onTL() {
+      if (!tl || W.dying) return;
+      var t = tl.time(), dir = t >= lastT ? 1 : -1, instant = !armed;
+      syncPanels(t, dir, instant);
+      syncReveals(t, instant);
+      setChap(t < T.b ? 0 : t < T.c ? 1 : t < T.d ? 2 : t < T.e ? 3 : 4, instant);
+      setWake(t >= T.c, instant);
+      if (armed && lastT < T.c && t >= T.c) thud();
+      var st = tl.scrollTrigger, pinned = !st || st.isActive;
+      setHint(pinned && !dragged && ((t >= T.spin1 - 0.15 && t < T.d - 0.05) || t >= T.buy + 0.25));
+      if (Math.abs(t - lastT) > 0.004 && (S.dragY !== 0 || S.dragX !== 0)) releaseDrag();
+      lastT = t;
+    }
+    var tl = gsap.timeline({
+      defaults: { ease: 'power2.inOut' }, onUpdate: onTL,
+      scrollTrigger: { trigger: track, start: 'top top', end: 'bottom bottom', scrub: 0.8, onLeave: function () { setHint(false); } }
+    });
+    // A · 3d-page-scroll: the tilt holds while the feed scrolls inside the card, two steps, one ease
+    tl.to(S, { roll: 0.5, duration: 0.34, ease: 'power3.out' }, 0.08);
+    tl.to(S, { roll: 1, duration: 0.36, ease: 'power3.out' }, 0.5);
+    // B · card-morph-anchor: the chat card becomes a manuscript page and the book forms around it
+    tl.to(S, { morph: 1, duration: 0.5 }, T.b);
+    tl.to(S, { pb: 1, duration: 0.6 }, T.b);
+    tl.to(S, { shell: 1, duration: 0.5, ease: 'power3.out' }, T.b + 0.3);
+    tl.to(S, { sheet: 1, duration: 0.5, ease: 'none' }, T.b + 0.6);
+    tl.to(S, { lidO: 1, duration: 0.08, ease: 'none' }, T.b + 0.83);
+    tl.to(S, { lidA: 0, duration: T.c - (T.b + 0.89), ease: 'power2.in' }, T.b + 0.89);
+    // C · the book settles, then turns once so the spine and the back get their moment
+    tl.to(S, { pb: 0, ry: -24, rx: -8, duration: 0.3, ease: 'power2.out' }, T.c);
+    tl.to(S, { ry: -384, duration: T.spin1 - T.spin0 }, T.spin0);
+    // D · coordinate-target-zoom, in phases: pull to the full cover, push to her face, travel to the fire, pull back
+    tl.to(S, { cam: 1, ry: -370, rx: -4, duration: 0.5, ease: 'power3.inOut' }, T.d);
+    SEQ.forEach(function (w, i) {
+      if (i < 1) return;
+      var k = Math.min(i + 1, 4), inside = k > 1 && k < 4;   // flat while inside the painting, an object again at the full view
+      tl.to(S, { cam: k, ry: inside ? -360 : -370, rx: inside ? 0 : -4, duration: 0.42, ease: 'power3.inOut' }, w.start - 0.16);
+    });
+    // E · back out to the object
+    tl.to(S, { cam: 5, ry: -384, rx: -8, duration: 0.6, ease: 'power3.inOut' }, T.e);
+    tl.to({}, { duration: 0.01 }, T.end - 0.01);
+    applyWake();
+    onTL();
+    W.on(win, 'scroll', function () { armed = true; }, { passive: true });
+
+    /* ---- one loop writes the whole pose: camera, book, lid, pages, shaders, embers ---- */
+    W.loop(function (dt) {
+      if (!active) return;
+      clock += dt; frame++;
+      // if frames stay slow, trade shader resolution for smoothness (never below half).
+      // Wall-clock time, because GSAP smooths its own delta after a long frame.
+      var now = win.performance.now(), real = now - lastNow; lastNow = now;
+      if (!win.__akFixedQuality && Q > 0.5 && real < 2000) {
+        slow = real > 34 ? slow + 1 : Math.max(0, slow - 2);
+        if (slow > 80) { Q = Math.max(0.5, Q * 0.75); slow = 0; sizeNeb(); cvW = 0; }
+      }
+      camAt(S.cam);
+      flatNow = flatness(S.cam);
+      // sine-wave-loop: low, slow, and added to the pose (never replacing it); off inside the cover
+      var idle = S.idle * (1 - flatNow) * (dragging ? 0.2 : 1);
+      var iy = Math.sin(clock * 0.9) * 5 * idle, iry = Math.sin(clock * 0.62 + 1.1) * 1.3 * idle, irx = Math.sin(clock * 0.8 + 0.4) * 0.7 * idle;
+      // multi-phase-camera: micro drift on two near-coprime frequencies while inside the cover, a short shake at the thud
+      var dx = Math.sin(clock * 0.33) * 7 * flatNow, dy = Math.sin(clock * 0.33 * 1.3) * 4 * flatNow + iy;
+      if (S.shake > 0.001) { dx += Math.sin(clock * 96) * 9 * S.shake; dy += Math.cos(clock * 81) * 6 * S.shake; }
+      // coordinate-target-zoom: the outer wrapper scales, the inner one counter-translates
+      var z = C.z * (1 + 0.04 * S.lift);
+      zoomEl.style.transform = 'scale(' + z.toFixed(4) + ')';
+      panEl.style.transform = 'translate3d(' + ((C.ax * vw + dx) / z - (C.fu - 0.5) * bw).toFixed(2) + 'px,' + ((C.ay * vh + dy) / z - (C.fv - 0.5) * bh).toFixed(2) + 'px,0)';
+      var ry = S.ry + S.pb * poseB.ry + iry + S.dragY, rx = S.rx + S.pb * poseB.rx + irx + S.dragX + 5 * S.sq, sq = (1 - 0.07 * S.sq).toFixed(4);
+      bookEl.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale3d(' + sq + ',' + sq + ',' + sq + ')';
+      var a = ((ry % 360) + 540) % 360 - 180;
+      if (sheen) { sheen.style.setProperty('--sx', clamp(50 - a * 1.5, -40, 140).toFixed(1) + '%'); sheen.style.opacity = (1 - flatNow).toFixed(3); }
+      if (S.lidA !== last.lidA) { lid.style.setProperty('--lid', S.lidA.toFixed(2) + 'deg'); last.lidA = S.lidA; }
+      if (S.lidO !== last.lidO) { var lo = S.lidO.toFixed(3); lidFaces.forEach(function (f) { f.style.opacity = lo; }); last.lidO = S.lidO; }
+      if (S.sheet !== last.sheet) {
+        sheets.forEach(function (el, i) {
+          var k = clamp((S.sheet - i * 0.11) / 0.42, 0, 1);
+          el.style.setProperty('--a', (-128 * (1 - k * k)).toFixed(2) + 'deg');
+          el.style.opacity = Math.min(1, k * 8).toFixed(3);
+        });
+        last.sheet = S.sheet;
+      }
+      if (S.shell !== last.shell) {
+        var so = Math.min(1, S.shell * 2.2).toFixed(3);
+        shell.style.transform = 'translateZ(' + (-(1 - S.shell) * 150).toFixed(1) + 'px)';
+        shellFaces.forEach(function (f) { f.style.opacity = so; });
+        last.shell = S.shell;
+      }
+      var shellVis = S.shell > 0.002 && flatNow < 0.985, pageVis = S.lidA < -0.4, grab = canDrag();
+      if (shellVis !== last.shellVis) { shell.style.visibility = shellVis ? 'visible' : 'hidden'; last.shellVis = shellVis; }
+      if (pageVis !== last.pageVis) { page.style.visibility = pageVis ? 'visible' : 'hidden'; if (sheetsWrap) sheetsWrap.style.visibility = pageVis ? 'visible' : 'hidden'; last.pageVis = pageVis; }
+      if (grab !== last.grab) { bookEl.style.pointerEvents = grab ? 'auto' : 'none'; last.grab = grab; }
+      if (S.morph !== last.morph) { page.style.setProperty('--mo', S.morph.toFixed(4)); last.morph = S.morph; }
+      if (S.roll !== last.roll && roll) { roll.style.transform = 'translate3d(0,' + (-S.roll * rollD).toFixed(1) + 'px,0)'; last.roll = S.roll; }
+      // the reading shade is only at full strength while the painting sits under the words
+      if (flatNow !== last.flat && shade2) { shade2.style.opacity = (0.5 + 0.5 * flatNow).toFixed(3); last.flat = flatNow; }
+      if (aura) aura.style.opacity = Math.max(0.75 * S.wake * (1 - flatNow), 0.9 * S.imp).toFixed(3);
+      // the network breathes while the server is on screen (radius only, so it never fights the entrance)
+      if (netIned && S.morph < 0.4) {
+        for (var n = 0; n < netNodes.length; n++) netNodes[n].setAttribute('r', (6 * (1 + Math.sin(clock * 1.5 + n / netNodes.length * 6.2832) * 0.08)).toFixed(2));
+      }
+      if (pBuy && pBuy.o > 0.01) FM.forEach(drawFmt);
+      // one layout read per frame, after every write
+      var pr = pin.getBoundingClientRect(), ob = orbEl ? orbEl.getBoundingClientRect() : pr;
+      var ox = ob.left - pr.left, oy = ob.top - pr.top, pt = W.pointer;
+      var k = damp(dt, 0.01);
+      parX = lerp(parX, pt.active ? clamp((pt.x - pr.left) / vw - 0.5, -0.5, 0.5) * flatNow : 0, k);
+      parY = lerp(parY, pt.active ? clamp((pt.y - pr.top) / vh - 0.5, -0.5, 0.5) * flatNow : 0, k);
+      renderCover(a);
+      renderNeb(ox / vw, 1 - oy / vh);
+      renderEmbers(dt, a, ox, oy);
+    });
+
+    var inited = false;
+    ST.create({
+      trigger: ww, start: 'top 150%', end: 'bottom -30%',
+      onToggle: function (s) {
+        active = s.isActive;
+        if (active && !inited) { inited = true; initNeb(); initCover(); sizeEmb(); }
+      }
+    });
+
+    var rz = 0;
+    function relayout() { layout(); sizeNeb(); sizeEmb(); cvW = 0; }
+    W.on(win, 'resize', function () { win.cancelAnimationFrame(rz); rz = win.requestAnimationFrame(relayout); });
+    var prevMeasure = W.measure;
+    W.measure = function () { relayout(); if (prevMeasure) prevMeasure(); };
+
+    W.cleanup(function () {
+      // stop everything this module started outside the GSAP context, then hand back clean elements
+      gsap.killTweensOf(drivers.concat([S, buyD], FM, panels));
+      gsap.killTweensOf(reveals.map(function (r) { return r.el; }).concat(subs.map(function (s) { return s.el; }), chaps, facts, netEls, netLines, hint ? [hint] : []));
+      var clear = function (el, props) { if (el) props.forEach(function (p) { el.style[p] = ''; }); };
+      [zoomEl, panEl, bookEl, shell, roll, shade2, aura, page, sheetsWrap, hint].forEach(function (el) { clear(el, ['transform', 'opacity', 'visibility', 'pointerEvents']); });
+      panels.forEach(function (p) { clear(p.el, ['transform', 'opacity', 'pointerEvents']); });
+      reveals.forEach(function (r) { clear(r.el, ['transform', 'opacity']); });
+      subs.forEach(function (s) { clear(s.el, ['transform', 'opacity']); });
+      letters.forEach(function (el) { clear(el, ['color', 'textShadow', 'transform']); });
+      fmts.concat(facts, chaps, shellFaces, lidFaces, sheets).forEach(function (el) { clear(el, ['transform', 'opacity']); });
+      bookEl.classList.remove('is-grab');
+    });
+  }
+
   /* ---------- 08 OFFLINE: orbit-3d-entry + control-target-sync with the list ---------- */
   function beyond(W) {
     var orbit = W.$('.orbit'); if (!orbit) return;
@@ -1293,5 +2039,5 @@
     W.ST.create({ trigger: W.$('.contact-grid'), start: 'top 90%', once: true, onEnter: function () { gsap.to(group, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.07, ease: 'power4.out' }); } });
   }
 
-  global.AKMotion = { mount: mount, version: '1.0.0' };
+  global.AKMotion = { mount: mount, version: '1.1.0' };
 })(typeof window !== 'undefined' ? window : this);
