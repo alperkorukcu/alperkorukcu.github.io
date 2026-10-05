@@ -1337,9 +1337,14 @@
     var chaps = qa('.ww-ch'), hint = q('.ww-hint'), hintLab = q('.ww-hint .rd');
     var lock = q('.ww-lock'), buy = q('.ww-buy'), grpA = q('.ww-grp-a'), grpB = q('.ww-grp-b'), lines = qa('.ww-lines li');
     var letters = qa('.ww-title .wl'), kick = q('.ww-kick'), by = q('.ww-by'), tag = q('.ww-tag');
-    var fmts = qa('.ww-fmt'), facts = qa('.ww-facts li');
+    var fmts = qa('.ww-fmt'), facts = qa('.ww-facts li'), factsWrap = q('.ww-facts');
+    var site = q('.ww-site'), siteMask = q('.ww-site-mask'), siteGlow = q('.ww-site-glow'), siteSweep = q('.ww-site-sweep');
+    var moons = qa('.si-moon'), siWorld = q('.si-world');
+    var moonRest = moons.map(function (m) { return m.getAttribute('transform'); });
+    var bookwrap = q('.ww-bookwrap'), spineEl = q('.bk-spine'), edgeREl = q('.bk-edge-r'), hudEl = W.$('.hud');
     var netHubs = qa('.nt-h, .nt-t'), netNodes = qa('.nt-n'), netLines = qa('.nt-lf'), netHubLine = q('.nt-hub');
     if (!shell || !lid || !page) throw new Error('book markup incomplete');
+    var DEG = Math.PI / 180;
 
     /* theme-crossfade-morph: the accent of the whole site re-skins while the HUD holds still.
        Registering the tokens as colours lets one CSS transition blend every accent at once. */
@@ -1363,9 +1368,30 @@
     var S = { ry: -14, rx: 4, pb: 0, cam: 0, lidA: -128, lidO: 0, sheet: 0, shell: 0, morph: 0, roll: 0,
       wake: 0, sq: 0, imp: 0, shake: 0, lift: 0, dragY: 0, dragX: 0, idle: 0 };
     var vw = 1, vh = 1, bw = 1, bh = 1, mob = false, K = [], rollD = 0, lockH = 0, buyH = 0, poseB = { ry: -20, rx: -17 };
+    var endUp = 0, endDn = 0, colS = 1, siteH = 0, persp = 1700, EPS = 7, G = { ht: 1, hw: 1, hh: 1, bi: 0 }, sized = { w: -1, h: -1, r: 0 };
     var active = false, clock = 0, flatNow = 0, frame = 0, armed = false, lastT = 0, Q = 1, slow = 0, lastNow = 0;
     var C = { z: 1, fu: 0.5, fv: 0.5, ax: 0, ay: 0 }, last = {};
     var dragging = false, dragged = false, releasing = false, buyOn = false;
+
+    /* ---- which faces point at the camera: worked out here, every frame, and written as opacity.
+            The picture must not depend on the browser culling back faces. Some phone engines keep a
+            canvas (or any child with its own layer) on screen after its parent has turned away, and
+            the cover then shows through the book mirrored, turning against it. ---- */
+    var faces = [
+      { el: front, lid: 1 }, { el: q('.bk-inner'), lid: -1 },
+      { el: q('.bk-back'), n: [0, 0, -1] }, { el: q('.bk-in2'), n: [0, 0, 1] },
+      { el: spineEl, n: [-1, 0, 0] }, { el: edgeREl, n: [1, 0, 0] },
+      { el: q('.bk-edge-t'), n: [0, -1, 0] }, { el: q('.bk-edge-b'), n: [0, 1, 0] }
+    ].filter(function (f) { return !!f.el; });
+    faces.forEach(function (f) { f.o = -1; f.d = 0; });
+    var fcy = 1, fsy = 0, fcx = 1, fsx = 0, ftx = 0, fty = 0, fsq = 1, frontF = 1;
+    // Positive when the printed side of a plane faces the camera. (nx, ny, nz) is its normal in book
+    // space and d its distance from the book's centre; the pose comes from the loop below.
+    function facing(nx, ny, nz, d) {
+      var ax = nx * fcy + nz * fsy, az = nz * fcy - nx * fsy;      // rotateY
+      var wy = ny * fcx - az * fsx, wz = ny * fsx + az * fcx;      // rotateX
+      return persp * wz - ax * ftx - wy * fty - fsq * d;
+    }
 
     /* ---- text panels: reactive-displacement. One driver per swap, the leaving panel is gone at 45% ---- */
     var panels = [], drivers = [];
@@ -1390,10 +1416,15 @@
       addPanel(li, function (t) { return t >= w.start && t < (lastOne ? T.e : w.end); });
     });
     var pBuy = addPanel(buy, function (t) { return t >= T.buy; }, true);
-    var GAP = 26;
+    var GAP = 26, GAPM = 18;
+    // A wide screen centres lockup and editions as one group (a little lower, endDn, if the nav is in the way).
+    // A phone stacks them under the book, and when the stack is taller than its column the lockup moves up by
+    // the difference (endUp) and the book gives way.
+    function lockUp() { return mob ? -endUp : endDn - (buyH + GAP) / 2; }
     function placeBases() {
-      if (pBuy) pBuy.base = mob ? lockH + 18 : (lockH + GAP) / 2;
-      if (pLock) { gsap.killTweensOf(pLock, 'base'); pLock.base = (!mob && buyOn) ? -(buyH + GAP) / 2 : 0; }
+      if (pBuy) pBuy.base = mob ? lockH + GAPM - endUp : endDn + (lockH + GAP) / 2;
+      if (pLock) { gsap.killTweensOf(pLock, 'base'); pLock.base = buyOn ? lockUp() : 0; }
+      drawHint();
     }
     function syncPanels(t, dir, instant) {
       var ins = [], outs = [];
@@ -1477,8 +1508,11 @@
         gsap.to(s.el, { opacity: want ? 1 : 0, y: want ? 0 : 14, duration: want ? 0.7 : 0.2, ease: 'power3.out', overwrite: true });
       });
       bookEl.style.setProperty('--wk', S.wake.toFixed(3));
+      // once it is fully awake the cover images need no filter at all (one less layer per face for a phone to juggle)
+      var awake = S.wake > 0.999;
+      if (awake !== awakeNow) { awakeNow = awake; bookEl.classList.toggle('is-awake', awake); }
     }
-    var wakeOn = false, wakeTw = null;
+    var wakeOn = false, wakeTw = null, awakeNow = false;
     function setWake(on, instant) {
       if (on === wakeOn) return; wakeOn = on;
       if (wakeTw) wakeTw.kill();
@@ -1507,8 +1541,8 @@
     }
     function nudge(on, instant) {
       if (!pLock) return;
-      var to = (!mob && on) ? -(buyH + GAP) / 2 : 0, from = pLock.base, d = to - from;
-      var draw = function () { drawPanel(pLock); };
+      var to = on ? lockUp() : 0, from = pLock.base, d = to - from;
+      var draw = function () { drawPanel(pLock); drawHint(); };
       gsap.killTweensOf(pLock, 'base');
       if (instant || Math.abs(d) < 1) { pLock.base = to; draw(); return; }
       if (!on) { gsap.to(pLock, { base: to, duration: 0.45, ease: 'power3.out', onUpdate: draw }); return; }
@@ -1521,22 +1555,80 @@
     }
     function buyIn(instant) {
       buyOn = true;
-      var pr = pin.getBoundingClientRect(), cx = pr.left + vw / 2 + K[0].ax * vw, cy = pr.top + vh / 2 + K[0].ay * vh;
+      // the cards fly out of the book where it rests in this scene (the column may be scaled to fit a short screen)
+      var end = K[K.length - 1], pr = pin.getBoundingClientRect(), cx = pr.left + vw / 2 + end.ax * vw, cy = pr.top + vh / 2 + end.ay * vh;
       FM.forEach(function (f) {
         f.el.style.transform = 'none';
         var r = f.el.getBoundingClientRect();
-        f.dx = cx - (r.left + r.width / 2); f.dy = cy - (r.top + r.height / 2); f.k = 0;
+        f.dx = (cx - (r.left + r.width / 2)) / colS; f.dy = (cy - (r.top + r.height / 2)) / colS; f.k = 0;
       });
       gsap.killTweensOf(buyD); buyD.p = 0;
       gsap.to(buyD, { p: 1, duration: instant ? 0 : 1.15, ease: 'power3.out', onUpdate: function () {
         FM.forEach(function (f, i) { f.k = clamp((buyD.p - i * 0.05) / 0.9, 0, 1); });
       } });
       gsap.fromTo(facts, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: instant ? 0 : 0.55, ease: 'power3.out', stagger: instant ? 0 : 0.06, delay: instant ? 0 : 0.5, overwrite: true });
+      siteIn(instant);
       nudge(true, instant);
     }
     function buyOut(instant) {
       buyOn = false; gsap.killTweensOf(buyD);
+      gsap.killTweensOf([siteD, glowD, sweepD]);
       nudge(false, instant);
+    }
+
+    /* ---- the book's own site. anchored-layout-expand: the row of editions is the pinned header, the
+            button is the sheet that slides out from under it, and the facts below ride the same proxy, so
+            the seam between them never opens. ambient-glow-bloom lands on the same beat (one bloom, a slow
+            breathe, one sweep of light across the surface), and svg-icon-enrichment keeps its small world
+            turning: a moon on a tilted orbit, passing behind the planet and in front of it. ---- */
+    var GLOW = 0.3, siteD = { g: 1 }, glowD = { o: 0, s: 0.86 }, sweepD = { p: 0 }, orbD = { v: 1 }, orbA = 0.6;
+    function drawSite() {
+      var y = (-(1 - siteD.g) * siteH).toFixed(1);
+      if (site) site.style.transform = 'translate3d(0,' + y + 'px,0)';
+      if (factsWrap) factsWrap.style.transform = 'translate3d(0,' + y + 'px,0)';
+    }
+    function drawSweep() {
+      if (!siteSweep) return;
+      siteSweep.style.transform = 'translate3d(' + (-120 + sweepD.p * 540).toFixed(1) + '%,0,0)';
+      siteSweep.style.opacity = (Math.sin(Math.PI * sweepD.p) * 0.9).toFixed(3);
+    }
+    function sweep(delay) {   // one pass, constant glide, never a loop
+      if (!siteSweep) return;
+      gsap.killTweensOf(sweepD); sweepD.p = 0;
+      gsap.to(sweepD, { p: 1, duration: 0.95, delay: delay || 0, ease: 'none', onUpdate: drawSweep, onComplete: drawSweep });
+    }
+    function siteIn(instant) {
+      if (!site) return;
+      gsap.killTweensOf([siteD, glowD, sweepD]);
+      sweepD.p = 0; drawSweep();
+      if (instant) { siteD.g = 1; glowD.o = GLOW; glowD.s = 1; drawSite(); return; }
+      siteD.g = 0; glowD.o = 0; glowD.s = 0.86; drawSite();
+      // the cause of the growth is the last card landing; the glow resolves with the button, as one beat
+      gsap.to(siteD, { g: 1, duration: 0.55, delay: 0.8, ease: 'power3.out', onUpdate: drawSite, onComplete: drawSite });
+      gsap.to(glowD, { o: GLOW, s: 1, duration: 0.62, delay: 0.8, ease: 'power2.out' });
+      sweep(1.3);
+    }
+    if (site && !W.coarse) {
+      W.on(site, 'pointerenter', function () { gsap.to(orbD, { v: 3, duration: 0.4, ease: 'power2.out', overwrite: true }); if (siteD.g > 0.99) sweep(0); });
+      W.on(site, 'pointerleave', function () { gsap.to(orbD, { v: 1, duration: 1.1, ease: 'power2.out', overwrite: true }); });
+    }
+    function runSite(dt) {   // called from the loop while the editions are on stage
+      if (siteGlow) {
+        var b = Math.sin(clock * 1.85);   // one breath in about 3.4 s, a hair around the peak
+        siteGlow.style.opacity = (glowD.o * (1 + 0.12 * b)).toFixed(3);
+        siteGlow.style.transform = 'scale(' + (glowD.s * (1 + 0.018 * b)).toFixed(4) + ')';
+      }
+      if (!moons.length) return;
+      orbA += dt * 1.9 * orbD.v;
+      var mx = (21 * Math.cos(orbA)).toFixed(2), my = (7.5 * Math.sin(orbA)).toFixed(2), frontHalf = Math.sin(orbA) >= 0;
+      for (var i = 0; i < moons.length; i++) {
+        // two moons, one drawn before the planet and one after it: only the one on the right side of the planet shows
+        var isFront = moons[i].classList.contains('si-moon-f');
+        moons[i].setAttribute('transform', 'translate(' + mx + ' ' + my + ')');
+        moons[i].style.opacity = isFront === frontHalf ? '1' : '0';
+      }
+      // pulse: the planet breathes, slower than its moon turns (an attribute transform, so the centre is explicit)
+      if (siWorld) siWorld.setAttribute('transform', 'translate(24 24) scale(' + (1 + Math.sin(clock * 1.3) * 0.045).toFixed(4) + ') translate(-24 -24)');
     }
     FM.forEach(function (f) {
       W.on(f.el, 'pointerenter', function () { gsap.to(f, { hov: 1, duration: 0.35, ease: 'power3.out', overwrite: true }); });
@@ -1555,6 +1647,10 @@
     function setHint(on) {
       if (!hint || on === hintOn) return; hintOn = on;
       gsap.to(hint, { opacity: on ? 1 : 0, duration: 0.5, overwrite: true });
+    }
+    // on a phone the hint sits between the book and the lockup, so it travels with the lockup
+    function drawHint() {
+      if (hint) hint.style.transform = (mob && pLock && pLock.base) ? 'translate3d(0,' + pLock.base.toFixed(1) + 'px,0)' : '';
     }
 
     /* ---- the server: avatar-cloud-network. Two members; one of them played everybody, the other played one ---- */
@@ -1575,13 +1671,60 @@
     ST.create({ trigger: ww, start: 'top 40%', once: true, onEnter: netIn });
 
     /* ---- layout: everything the camera needs is measured here, never per frame ---- */
+    // the largest book that sits between two heights of the pin, centred between them (a tilted book is a touch taller than its box)
+    function fitBook(top, bot) {
+      return { z: clamp((bot - top) / (bh * 1.06), 0.4, 1), fu: 0.5, fv: 0.5, ax: 0, ay: ((top + bot) / 2) / vh - 0.5 };
+    }
     function layout() {
       vw = pin.clientWidth || win.innerWidth; vh = pin.clientHeight || win.innerHeight;
       bw = bookEl.offsetWidth || 1; bh = bookEl.offsetHeight || 1;
       mob = (win.getComputedStyle(ww).getPropertyValue('--mob') || '').trim() === '1';
+      // classes rather than media queries: the pin keeps its height while a phone's toolbar comes and goes, a media query does not
+      var short = vh < 700;
+      ww.classList.toggle('is-short', short);
+      ww.classList.remove('is-tight');
+      if (leftCol) leftCol.style.transform = '';
       var gut = leftCol ? leftCol.offsetLeft : 24, colW = leftCol ? leftCol.offsetWidth : 0;
       var hx = mob ? 0 : clamp(((gut + colW + 40 + vw - gut) / 2) / vw - 0.5, 0.15, 0.26);
-      var home = { z: 1, fu: 0.5, fv: 0.5, ax: hx, ay: mob ? -0.2 : 0.005 };
+      lockH = lock ? lock.offsetHeight : 0; buyH = buy ? buy.offsetHeight : 0;
+      siteH = siteMask ? siteMask.offsetHeight : 0;
+      var hA = grpA ? grpA.offsetHeight : 0, hB = grpB ? grpB.offsetHeight : 0;
+      var home, home5;
+      var hudB = hudEl ? hudEl.offsetHeight - (parseFloat(win.getComputedStyle(hudEl).paddingBottom) || 0) : 60;   // where the nav ends
+      endUp = 0; endDn = 0; colS = 1;
+      if (mob) {
+        // Phone column, measured rather than assumed. The words start where their longest scene still fits,
+        // the book takes what is left under the nav, and in the last scene, where editions and the site button
+        // join the lockup, whatever does not fit moves the lockup up while the book makes room.
+        var PADB = 14, topY = short ? hudB + 8 : 92;
+        var ct = Math.round(Math.max(0.34 * vh, Math.min(0.53 * vh, vh - PADB - Math.max(hA, hB, lockH))));
+        ww.style.setProperty('--ct', ct + 'px');
+        var colH = vh - PADB - ct;
+        home = fitBook(topY, ct - 28);
+        endUp = Math.max(0, lockH + GAPM + buyH - colH);
+        home5 = fitBook(topY, ct - endUp - 28);
+        if (home5.z < 0.8 && factsWrap) {
+          // no room left for the book: the three facts step aside (screen readers still get them)
+          ww.classList.add('is-tight');
+          buyH = buy ? buy.offsetHeight : 0;
+          endUp = Math.max(0, lockH + GAPM + buyH - colH);
+          home5 = fitBook(topY, ct - endUp - 28);
+        }
+      } else {
+        ww.style.removeProperty('--ct');
+        home = { z: 1, fu: 0.5, fv: 0.5, ax: hx, ay: 0.005 };
+        home5 = home;
+        // The last scene is the tall one: lockup, editions, site button, facts. It has to clear the nav above
+        // and the edge below. On a short screen the group first lets the three facts go, then sits lower than
+        // centre, and only then does the whole column scale down (a phone on its side).
+        var fitS = function () {
+          return clamp(Math.min((vh - hudB - 24) / Math.max(1, lockH + GAP + buyH), (vh - 2 * hudB - 16) / Math.max(1, hA, hB)), 0.5, 1);
+        };
+        colS = fitS();
+        if (colS < 0.86 && factsWrap) { ww.classList.add('is-tight'); buyH = buy ? buy.offsetHeight : 0; colS = fitS(); }
+        if (leftCol && colS < 0.999) leftCol.style.transform = 'scale(' + colS.toFixed(4) + ')';
+        endDn = Math.max(0, (hudB + 10 - vh / 2) / colS + (lockH + GAP + buyH) / 2);
+      }
       var zf = (mob ? Math.min(0.9 * vw / 0.6709, 0.6 * vh) : 0.84 * vh) / bh;
       var full = { z: zf, fu: 0.5, fv: 0.5, ax: mob ? 0 : Math.max(0.13, hx - 0.04), ay: mob ? -0.085 : 0.03 };
       var zd = (mob ? 1.2 : 1.75) * vh / bh, wc = zd * bw;
@@ -1589,16 +1732,23 @@
       var edge = function (fu) { return clamp((vw + 24 - (1 - fu) * wc) / vw - 0.5, 0.14, 0.3); };
       var woman = { z: zd, fu: 0.57, fv: mob ? 0.43 : 0.42, ax: mob ? 0 : edge(0.57), ay: mob ? -0.2 : -0.04 };
       var orb = { z: zd, fu: mob ? 0.62 : 0.635, fv: 0.825, ax: mob ? 0 : edge(0.635), ay: mob ? -0.14 : 0.2 };
-      K = [home, full, woman, orb, full, home];
+      K = [home, full, woman, orb, full, home5];
       // While the book is assembled its pages swing in from the left. If they would cross the text,
       // the book turns the other way and they arrive from the front instead.
-      var textR = gut + (grpB ? grpB.offsetWidth : colW) + 16;
+      var textR = gut + (grpB ? grpB.offsetWidth : colW) * colS + 16;
       poseB = (mob || vw / 2 + hx * vw - 1.4 * bw >= textR) ? { ry: -20, rx: -17 } : { ry: 36, rx: -16 };
       rollD = Math.max(0, (roll ? roll.scrollHeight : 0) - (feed ? feed.clientHeight : 0));
-      lockH = lock ? lock.offsetHeight : 0; buyH = buy ? buy.offsetHeight : 0;
+      // the solid the face test works on: half thickness, half width, half height, and the inset of the page block
+      G.ht = (spineEl ? spineEl.offsetWidth : bh * 0.1112) / 2; G.hw = bw / 2; G.hh = bh / 2; G.bi = edgeREl ? edgeREl.offsetTop : bh * 0.012;
+      persp = parseFloat(win.getComputedStyle(bookwrap || pin).perspective) || 1700; EPS = persp * 0.004;
+      faces.forEach(function (f) {
+        f.o = -1;
+        if (f.n) f.d = f.n[2] < 0 ? G.ht : f.n[2] > 0 ? 1 - G.ht : f.n[0] < 0 ? G.hw : f.n[0] > 0 ? G.hw - G.bi : G.hh - G.bi;
+      });
       panels.forEach(function (p) { p.cy = !mob; });
       placeBases();
       panels.forEach(drawPanel);
+      drawSite();
       last = {};
     }
     function camAt(c) {
@@ -1689,7 +1839,8 @@
       if (frontImg.complete && frontImg.naturalWidth) go(); else W.on(frontImg, 'load', go);
     }
     function renderCover(a) {
-      if (!cvOK || Math.abs(a) > 100 || S.lidO < 0.01) return;
+      // nothing to draw while the cover points away (it starts again a few degrees before it turns back into view)
+      if (!cvOK || frontF < -0.06 * persp || S.lidO < 0.01) return;
       // the backing store follows the size on screen (never past the artwork), with a little supersampling
       var gl = cvGL, cap = Math.round(1536 * Q), need = clamp(bw * Math.min(win.devicePixelRatio || 1, 2) * C.z * 1.35, 320, cap), resized = false;
       if (need > cvW * 1.02 || need < cvW * 0.5) {
@@ -1728,7 +1879,7 @@
       }
     }
     function emit(dt, a, ox, oy) {
-      if (S.wake < 0.2 || Math.abs(a) > 78 || S.lidO < 0.5) return;
+      if (S.wake < 0.2 || frontF < 0.2 * persp || S.lidO < 0.5) return;
       if (ox < -40 || ox > vw + 40 || oy < -40 || oy > vh + 40) return;
       emitAcc += (W.coarse ? 16 : 30) * Q * S.wake * (0.6 + 0.4 * flatNow) * dt;
       var zs = Math.sqrt(C.z), R = bh * 0.045 * C.z, cap = W.coarse ? 80 : 160;
@@ -1767,21 +1918,36 @@
       eg.globalCompositeOperation = 'source-over';
     }
 
-    /* ---- cursor-drag, with a real pointer: grab (press dip, then lift), carry, drop-snap onto a face ---- */
-    var pid = -1, dsx = 0, dsy = 0, dY0 = 0, dX0 = 0, vyaw = 0, lmx = 0, lmt = 0;
+    /* ---- cursor-drag, with a real pointer: grab (press dip, then lift), carry, drop-snap onto a face.
+            A finger has to show it means it first: only a sideways move takes hold of the book. A scroll that
+            happens to start on the cover stays a scroll, and the book does not twitch under it. ---- */
+    var pid = -1, dsx = 0, dsy = 0, dY0 = 0, dX0 = 0, vyaw = 0, lmx = 0, lmt = 0, pending = false, dragTo = 0;
     function canDrag() { return flatNow < 0.2 && S.lidO > 0.99 && S.lidA > -1; }
-    W.on(bookEl, 'pointerdown', function (e) {
-      if (!canDrag() || (e.button !== undefined && e.button > 0)) return;
-      dragging = true; dragged = true; releasing = false; pid = e.pointerId;
+    function takeBook(e) {
+      dragging = true; dragged = true; releasing = false; pending = false;
       dsx = lmx = e.clientX; dsy = e.clientY; dY0 = S.dragY; dX0 = S.dragX; vyaw = 0; lmt = win.performance.now();
       try { bookEl.setPointerCapture(pid); } catch (err) {}
       bookEl.classList.add('is-grab');
       gsap.killTweensOf(S, 'dragY,dragX,lift');
       gsap.timeline().to(S, { lift: -0.6, duration: 0.07, ease: 'power1.in' }).to(S, { lift: 1, duration: 0.3, ease: 'back.out(2)' });
       setHint(false);
+    }
+    W.on(bookEl, 'pointerdown', function (e) {
+      if (pending) { pending = false; return; }                   // a second finger: that is a pinch, not a turn
+      if (dragging || !canDrag() || (e.button !== undefined && e.button > 0)) return;
+      pid = e.pointerId;
+      if (e.pointerType === 'touch') { pending = true; dsx = e.clientX; dsy = e.clientY; return; }
+      takeBook(e);
     });
     W.on(bookEl, 'pointermove', function (e) {
-      if (!dragging || e.pointerId !== pid) return;
+      if (e.pointerId !== pid) return;
+      if (pending) {
+        var mx = Math.abs(e.clientX - dsx), my = Math.abs(e.clientY - dsy);
+        if (my > 10 && my >= mx) { pending = false; return; }     // going up or down: that is the page scrolling
+        if (mx >= 10 && mx > my * 1.5 && canDrag()) takeBook(e);    // clearly sideways: the book is in hand, from here
+        return;
+      }
+      if (!dragging) return;
       var now = win.performance.now();
       S.dragY = dY0 + (e.clientX - dsx) * 0.42;
       S.dragX = clamp(dX0 - (e.clientY - dsy) * 0.12, -16, 16);
@@ -1789,22 +1955,34 @@
       lmx = e.clientX; lmt = now;
     });
     function endDrag(e) {
-      if (!dragging || (e && e.pointerId !== undefined && e.pointerId !== pid)) return;
+      if (e && e.pointerId !== undefined && e.pointerId !== pid) return;
+      pending = false;
+      if (!dragging) return;
       dragging = false; bookEl.classList.remove('is-grab');
       try { bookEl.releasePointerCapture(pid); } catch (err) {}
       gsap.killTweensOf(S, 'dragY,dragX,lift');
-      var target = Math.round((S.dragY + clamp(vyaw, -900, 900) * 0.22) / 180) * 180;
-      gsap.to(S, { dragY: target, dragX: 0, duration: 1.1, ease: 'elastic.out(1, 0.7)' });
+      // a finger that stopped before it lifted throws nothing
+      var still = win.performance.now() - lmt;
+      if (still > 90) vyaw *= Math.max(0, 1 - (still - 90) / 160);
+      // if the browser took the gesture back (it turned into a scroll), nothing is thrown: the book settles where it was
+      var taken = !!e && e.type !== 'pointerup';
+      dragTo = Math.round((taken ? dY0 : S.dragY + clamp(vyaw, -900, 900) * 0.22) / 180) * 180;
+      gsap.to(S, { dragY: dragTo, dragX: 0, duration: taken ? 0.5 : 1.1, ease: taken ? 'power3.out' : 'elastic.out(1, 0.7)' });
       gsap.to(S, { lift: 0, duration: 0.5, ease: 'power3.out' });
     }
     W.on(bookEl, 'pointerup', endDrag);
     W.on(bookEl, 'pointercancel', endDrag);
-    W.on(bookEl, 'lostpointercapture', endDrag);
-    function releaseDrag() {   // scrolling takes the book back, by the shortest way round
+    // only when the book itself loses the pointer: taking hold moves a finger's capture off the face it
+    // landed on, and that face announces its own loss on the way
+    W.on(bookEl, 'lostpointercapture', function (e) { if (e.target === bookEl) endDrag(e); });
+    // Scrolling takes the book back to its scripted pose. It finishes the turn it was on rather than swinging
+    // back against it: a book shown from behind carries on round, in the direction it was turned.
+    function releaseDrag() {
       if (dragging || releasing) return;
       releasing = true;
       gsap.killTweensOf(S, 'dragY,dragX');
-      gsap.to(S, { dragY: Math.round(S.dragY / 360) * 360, dragX: 0, duration: 0.7, ease: 'power3.out', onComplete: function () { S.dragY = 0; releasing = false; } });
+      var to = (dragTo < 0 ? -1 : 1) * Math.ceil(Math.abs(dragTo) / 360 - 1e-6) * 360;
+      gsap.to(S, { dragY: to, dragX: 0, duration: clamp(0.45 + Math.abs(to - S.dragY) / 360 * 0.6, 0.5, 1), ease: 'power3.out', onComplete: function () { S.dragY = 0; dragTo = 0; releasing = false; } });
     }
 
     /* ---- iris: the section opens like a planet rising, a circle that grows as it arrives ---- */
@@ -1815,6 +1993,7 @@
 
     /* ---- the scrubbed timeline: pose and camera only. Words and beats are triggered from onUpdate ---- */
     layout();
+    sized.w = pin.clientWidth; sized.h = pin.clientHeight; sized.r = win.devicePixelRatio || 1;
     function onTL() {
       if (!tl || W.dying) return;
       var t = tl.time(), dir = t >= lastT ? 1 : -1, instant = !armed;
@@ -1881,13 +2060,24 @@
       // coordinate-target-zoom: the outer wrapper scales, the inner one counter-translates
       var z = C.z * (1 + 0.04 * S.lift);
       zoomEl.style.transform = 'scale(' + z.toFixed(4) + ')';
-      panEl.style.transform = 'translate3d(' + ((C.ax * vw + dx) / z - (C.fu - 0.5) * bw).toFixed(2) + 'px,' + ((C.ay * vh + dy) / z - (C.fv - 0.5) * bh).toFixed(2) + 'px,0)';
-      var ry = S.ry + S.pb * poseB.ry + iry + S.dragY, rx = S.rx + S.pb * poseB.rx + irx + S.dragX + 5 * S.sq, sq = (1 - 0.07 * S.sq).toFixed(4);
+      ftx = (C.ax * vw + dx) / z - (C.fu - 0.5) * bw; fty = (C.ay * vh + dy) / z - (C.fv - 0.5) * bh;
+      panEl.style.transform = 'translate3d(' + ftx.toFixed(2) + 'px,' + fty.toFixed(2) + 'px,0)';
+      var ry = S.ry + S.pb * poseB.ry + iry + S.dragY, rx = S.rx + S.pb * poseB.rx + irx + S.dragX + 5 * S.sq, sqv = 1 - 0.07 * S.sq, sq = sqv.toFixed(4);
       bookEl.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale3d(' + sq + ',' + sq + ',' + sq + ')';
       var a = ((ry % 360) + 540) % 360 - 180;
       if (sheen) { sheen.style.setProperty('--sx', clamp(50 - a * 1.5, -40, 140).toFixed(1) + '%'); sheen.style.opacity = (1 - flatNow).toFixed(3); }
       if (S.lidA !== last.lidA) { lid.style.setProperty('--lid', S.lidA.toFixed(2) + 'deg'); last.lidA = S.lidA; }
-      if (S.lidO !== last.lidO) { var lo = S.lidO.toFixed(3); lidFaces.forEach(function (f) { f.style.opacity = lo; }); last.lidO = S.lidO; }
+      // faces: drawn only while their printed side points at the camera (the lid is a plane through its hinge)
+      fcy = Math.cos(ry * DEG); fsy = Math.sin(ry * DEG); fcx = Math.cos(rx * DEG); fsx = Math.sin(rx * DEG); fsq = sqv;
+      var lidR = S.lidA * DEG, lsn = Math.sin(lidR), lcs = Math.cos(lidR), lidD = lcs * G.ht - lsn * G.hw;
+      var shO = Math.min(1, S.shell * 2.2), shZ = -(1 - S.shell) * 150;
+      frontF = facing(lsn, 0, lcs, lidD);
+      for (var fi = 0; fi < faces.length; fi++) {
+        var fc = faces[fi];
+        var fF = fc.lid ? (fc.lid > 0 ? frontF : facing(-lsn, 0, -lcs, 1 - lidD)) : facing(fc.n[0], fc.n[1], fc.n[2], fc.d + fc.n[2] * shZ);
+        var fo = fF > EPS ? (fc.lid ? S.lidO : shO) : 0;
+        if (fo !== fc.o) { fc.el.style.opacity = fo.toFixed(3); fc.o = fo; }
+      }
       if (S.sheet !== last.sheet) {
         sheets.forEach(function (el, i) {
           var k = clamp((S.sheet - i * 0.11) / 0.42, 0, 1);
@@ -1896,12 +2086,7 @@
         });
         last.sheet = S.sheet;
       }
-      if (S.shell !== last.shell) {
-        var so = Math.min(1, S.shell * 2.2).toFixed(3);
-        shell.style.transform = 'translateZ(' + (-(1 - S.shell) * 150).toFixed(1) + 'px)';
-        shellFaces.forEach(function (f) { f.style.opacity = so; });
-        last.shell = S.shell;
-      }
+      if (S.shell !== last.shell) { shell.style.transform = 'translateZ(' + shZ.toFixed(1) + 'px)'; last.shell = S.shell; }
       var shellVis = S.shell > 0.002 && flatNow < 0.985, pageVis = S.lidA < -0.4, grab = canDrag();
       if (shellVis !== last.shellVis) { shell.style.visibility = shellVis ? 'visible' : 'hidden'; last.shellVis = shellVis; }
       if (pageVis !== last.pageVis) { page.style.visibility = pageVis ? 'visible' : 'hidden'; if (sheetsWrap) sheetsWrap.style.visibility = pageVis ? 'visible' : 'hidden'; last.pageVis = pageVis; }
@@ -1915,7 +2100,7 @@
       if (netIned && S.morph < 0.4) {
         for (var n = 0; n < netNodes.length; n++) netNodes[n].setAttribute('r', (6 * (1 + Math.sin(clock * 1.5 + n / netNodes.length * 6.2832) * 0.08)).toFixed(2));
       }
-      if (pBuy && pBuy.o > 0.01) FM.forEach(drawFmt);
+      if (pBuy && pBuy.o > 0.01) { FM.forEach(drawFmt); runSite(dt); }
       // one layout read per frame, after every write
       var pr = pin.getBoundingClientRect(), ob = orbEl ? orbEl.getBoundingClientRect() : pr;
       var ox = ob.left - pr.left, oy = ob.top - pr.top, pt = W.pointer;
@@ -1936,24 +2121,34 @@
       }
     });
 
+    // A phone fires resize every time its toolbar slides in or out. The pin keeps its size through that,
+    // so nothing is measured again and no canvas is thrown away in the middle of a scroll.
     var rz = 0;
-    function relayout() { layout(); sizeNeb(); sizeEmb(); cvW = 0; }
+    function relayout(force) {
+      var w = pin.clientWidth, h = pin.clientHeight, r = win.devicePixelRatio || 1;
+      if (force !== true && w === sized.w && h === sized.h && r === sized.r) return;
+      sized.w = w; sized.h = h; sized.r = r;
+      layout(); sizeNeb(); sizeEmb(); cvW = 0;
+    }
     W.on(win, 'resize', function () { win.cancelAnimationFrame(rz); rz = win.requestAnimationFrame(relayout); });
     var prevMeasure = W.measure;
-    W.measure = function () { relayout(); if (prevMeasure) prevMeasure(); };
+    W.measure = function () { relayout(true); if (prevMeasure) prevMeasure(); };
 
     W.cleanup(function () {
       // stop everything this module started outside the GSAP context, then hand back clean elements
-      gsap.killTweensOf(drivers.concat([S, buyD], FM, panels));
+      gsap.killTweensOf(drivers.concat([S, buyD, siteD, glowD, sweepD, orbD], FM, panels));
       gsap.killTweensOf(reveals.map(function (r) { return r.el; }).concat(subs.map(function (s) { return s.el; }), chaps, facts, netEls, netLines, hint ? [hint] : []));
       var clear = function (el, props) { if (el) props.forEach(function (p) { el.style[p] = ''; }); };
-      [zoomEl, panEl, bookEl, shell, roll, shade2, aura, page, sheetsWrap, hint].forEach(function (el) { clear(el, ['transform', 'opacity', 'visibility', 'pointerEvents']); });
+      [zoomEl, panEl, bookEl, shell, roll, shade2, aura, page, sheetsWrap, hint, leftCol, site, factsWrap, siteGlow, siteSweep].forEach(function (el) { clear(el, ['transform', 'opacity', 'visibility', 'pointerEvents']); });
+      moons.forEach(function (m, i) { if (moonRest[i]) m.setAttribute('transform', moonRest[i]); else m.removeAttribute('transform'); m.style.opacity = ''; });
+      if (siWorld) siWorld.removeAttribute('transform');
+      ww.classList.remove('is-short', 'is-tight'); ww.style.removeProperty('--ct');
       panels.forEach(function (p) { clear(p.el, ['transform', 'opacity', 'pointerEvents']); });
       reveals.forEach(function (r) { clear(r.el, ['transform', 'opacity']); });
       subs.forEach(function (s) { clear(s.el, ['transform', 'opacity']); });
       letters.forEach(function (el) { clear(el, ['color', 'textShadow', 'transform']); });
       fmts.concat(facts, chaps, shellFaces, lidFaces, sheets).forEach(function (el) { clear(el, ['transform', 'opacity']); });
-      bookEl.classList.remove('is-grab');
+      bookEl.classList.remove('is-grab', 'is-awake');
     });
   }
 
